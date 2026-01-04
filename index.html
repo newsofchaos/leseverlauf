@@ -30,18 +30,17 @@
       margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
-      background: radial-gradient(1000px 600px at 20% 0%, rgba(46,125,50,0.10), transparent 60%),
-                  radial-gradient(900px 520px at 85% 10%, rgba(160,120,70,0.10), transparent 60%),
-                  linear-gradient(180deg, var(--bg), var(--bg2));
+      background: var(--bg);
       min-height:100vh;
     }
 
     .wrap{
-      max-width: 1100px;
+      max-width: 1180px;
       margin: 18px auto 60px;
       padding: 0 18px;
     }
 
+    /* title + subtitle (NOT sticky) */
     h1{
       font-size: 22px;
       margin: 10px 0 6px;
@@ -56,23 +55,26 @@
       line-height: 1.35;
     }
 
-    .stickyTop{
+    /* Sticky search bar ONLY (full-width, same bg, blurred) */
+    .stickySearch{
       position: sticky;
       top: 0;
       z-index: 50;
-      padding-top: 10px;
-      padding-bottom: 14px;
-      margin: 0 -18px 8px;
-      padding-left: 18px;
-      padding-right: 18px;
-      background: linear-gradient(180deg, rgba(231,226,219,0.96), rgba(231,226,219,0.78), rgba(231,226,219,0.00));
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+
+      /* full width beyond .wrap padding */
+      margin: 0 -18px 12px;
+      padding: 12px 18px;
+
+      background: rgba(236,236,236,0.78); /* same hue as bg */
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+
+      border-bottom: 1px solid rgba(0,0,0,0.06);
     }
 
     .topbar{
       display:flex;
-      justify-content:center;
+      justify-content:flex-start; /* left aligned */
     }
     .searchShell{
       width: min(920px, 100%);
@@ -124,16 +126,17 @@
     }
     .btnPrimary:hover{ background: rgba(46,125,50,0.16); }
 
+    /* layout: results 1/3, my books 2/3 */
     .grid{
       display:grid;
-      grid-template-columns: 1.06fr 0.94fr;
+      grid-template-columns: 1fr 2fr; /* 1/3 : 2/3 */
       gap: 16px;
       align-items:start;
-      margin-top: 10px;
+      margin-top: 6px;
     }
     @media (max-width: 980px){
       .grid{ grid-template-columns: 1fr; }
-      .stickyTop{ margin: 0 -18px 10px; }
+      .stickySearch{ margin: 0 -18px 12px; }
     }
 
     .card{
@@ -201,12 +204,7 @@
     }
 
     .meta{ flex:1; min-width:0; }
-    .tRow{
-      display:flex;
-      gap: 8px;
-      align-items:center;
-      min-width:0;
-    }
+    .tRow{ display:flex; gap: 8px; align-items:center; min-width:0; }
     .t{
       font-weight: 900;
       font-size: 14px;
@@ -331,16 +329,6 @@
       color: var(--text);
     }
 
-    .chip{
-      padding: 6px 10px;
-      border-radius: 999px;
-      border: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.02);
-      font-size: 12px;
-      color: rgba(20,20,20,0.78);
-      font-weight: 900;
-      white-space: nowrap;
-    }
     .badge{
       padding: 5px 10px;
       border-radius: 999px;
@@ -401,6 +389,7 @@
       border-color: rgba(46,125,50,0.35);
       box-shadow: 0 0 0 4px rgba(46,125,50,0.10);
     }
+
     .dividerLine{
       height: 1px;
       background: rgba(0,0,0,0.06);
@@ -507,9 +496,7 @@
       height: 30px;
     }
 
-    .shake{
-      animation: shake 320ms ease;
-    }
+    .shake{ animation: shake 320ms ease; }
     @keyframes shake{
       0%{ transform: translateX(0); }
       25%{ transform: translateX(-4px); }
@@ -534,10 +521,12 @@
 <body>
   <div class="wrap">
 
-    <div class="stickyTop">
-      <h1>Lesefortschritt</h1>
-      <p class="sub">Bücher suchen, hinzufügen, bearbeiten, protokollieren und auswerten.</p>
+    <!-- NOT sticky -->
+    <h1>Leseverlauf</h1>
+    <p class="sub">Bücher suchen, hinzufügen und nach Lesestand sortieren.</p>
 
+    <!-- Sticky search only -->
+    <div class="stickySearch">
       <div class="topbar">
         <div class="searchShell" role="search" aria-label="Buchsuche">
           <div class="bookIcon" aria-hidden="true">
@@ -554,13 +543,10 @@
     </div>
 
     <div class="grid">
-      <!-- LEFT: results -->
+      <!-- LEFT: results (1/3, left aligned) -->
       <section class="card">
         <div class="head">
           <div class="title">Suchergebnisse</div>
-          <div class="toolbar">
-            <span class="chip" id="apiHint">Quelle: Open Library</span>
-          </div>
         </div>
         <div class="body">
           <div id="status" class="status" aria-live="polite">Geben Sie eine ISBN oder einen Titel ein.</div>
@@ -569,7 +555,7 @@
         </div>
       </section>
 
-      <!-- RIGHT: my books -->
+      <!-- RIGHT: my books (2/3) -->
       <section class="card">
         <div class="head">
           <div class="title">Meine Bücher</div>
@@ -584,7 +570,6 @@
         </div>
 
         <div class="body">
-          <!-- SUMMARY -->
           <div class="sectionBox" aria-label="Übersicht">
             <div class="summaryGrid">
               <div class="kpi"><div class="v" id="kpiActive">0</div><div class="l">Aktiv</div></div>
@@ -603,7 +588,6 @@
 
             <div class="dividerLine"></div>
 
-            <!-- GOALS -->
             <div class="controlsRow" aria-label="Ziele">
               <span class="pill" style="font-weight:900;">Ziele</span>
               <label class="pill" for="goalDaily">Seiten/Tag</label>
@@ -615,7 +599,6 @@
             </div>
           </div>
 
-          <!-- FILTERS -->
           <div class="sectionBox" aria-label="Filter und Suche">
             <div class="controlsRow">
               <input id="myQuery" class="smallInput" placeholder="In meiner Liste suchen (Titel/Autor)" aria-label="In meiner Liste suchen" />
@@ -636,7 +619,6 @@
             </div>
           </div>
 
-          <!-- add-from-search panel -->
           <div id="selectPanel" class="panel" aria-label="Auswahl hinzufügen">
             <div class="panelTop">
               <img id="selCover" class="cover" alt="Cover" loading="lazy" referrerpolicy="no-referrer" />
@@ -671,7 +653,6 @@
             <div id="selError" class="err"></div>
           </div>
 
-          <!-- edit panel -->
           <div id="editPanel" class="panel" aria-label="Buch bearbeiten">
             <div class="panelTop">
               <img id="editCover" class="cover" alt="Cover" loading="lazy" referrerpolicy="no-referrer" />
@@ -705,7 +686,6 @@
 
             <div class="dividerLine"></div>
 
-            <!-- Sessions quick add -->
             <div class="panelActions" aria-label="Lesesitzung hinzufügen">
               <span class="pill" style="font-weight:900;">Lesesitzung</span>
               <button id="quickPlus10" class="ghost" type="button">+10</button>
@@ -732,7 +712,6 @@
   const KEY = "reading_progress_books_v6";
   const GOALS_KEY = "reading_progress_goals_v1";
 
-  // ----------------- helpers -----------------
   function escapeHtml(s) {
     return String(s ?? "")
       .replaceAll("&","&amp;")
@@ -748,9 +727,7 @@
     const p = (current / total) * 100;
     return Math.max(0, Math.min(100, p));
   }
-  function clamp(n, lo, hi){
-    return Math.max(lo, Math.min(hi, n));
-  }
+  function clamp(n, lo, hi){ return Math.max(lo, Math.min(hi, n)); }
   function todayISODate(){
     const d = new Date();
     const yyyy = d.getFullYear();
@@ -759,9 +736,8 @@
     return `${yyyy}-${mm}-${dd}`;
   }
   function startOfWeekISO(d=new Date()){
-    // Woche startet Montag
     const x = new Date(d);
-    const day = (x.getDay() + 6) % 7; // 0=Mo..6=So
+    const day = (x.getDay() + 6) % 7;
     x.setHours(0,0,0,0);
     x.setDate(x.getDate() - day);
     const yyyy = x.getFullYear();
@@ -784,7 +760,7 @@
       t = setTimeout(() => fn(...args), ms);
     };
   }
-  function toast(message, kind="info", ms=2600){
+  function toast(message, ms=2600){
     const wrap = document.getElementById("toastWrap");
     const el = document.createElement("div");
     el.className = "toast";
@@ -792,19 +768,16 @@
       <div class="msg">${escapeHtml(message)}</div>
       <button class="x" type="button" aria-label="Schließen">×</button>
     `;
-    const x = el.querySelector(".x");
-    x.addEventListener("click", () => { el.remove(); });
+    el.querySelector(".x").addEventListener("click", () => el.remove());
     wrap.appendChild(el);
-    setTimeout(() => { el.remove(); }, ms);
+    setTimeout(() => el.remove(), ms);
   }
   function shake(el){
     el.classList.remove("shake");
-    // reflow
     void el.offsetWidth;
     el.classList.add("shake");
   }
 
-  // ----------------- cover loading -----------------
   function coverUrlById(coverId, size="M") {
     return `https://covers.openlibrary.org/b/id/${encodeURIComponent(coverId)}-${size}.jpg`;
   }
@@ -817,7 +790,7 @@
       const clean = String(x).replaceAll(/[\s-]/g, "");
       if (/^[0-9Xx]{10}$/.test(clean) || /^[0-9]{13}$/.test(clean)) out.push(clean);
     }
-    out.sort((a,b) => (b.length - a.length)); // prefer ISBN-13
+    out.sort((a,b) => (b.length - a.length));
     return [...new Set(out)].slice(0, 8);
   }
   function setCoverHidden(imgEl) {
@@ -847,11 +820,9 @@
     tryIsbns(0);
   }
 
-  // ----------------- storage & normalization -----------------
   function normalizeBook(x) {
     const total = Number(x.total);
     const current = Number(x.current);
-
     const safeTotal = Number.isFinite(total) && total > 0 ? total : 1;
     const safeCurrent = Number.isFinite(current) && current >= 0 ? Math.min(current, safeTotal) : 0;
 
@@ -865,7 +836,6 @@
       coverId: x.coverId || null,
       isbns: isbnCandidates(x.isbns || []),
 
-      // Open Library keys (optional)
       workKey: x.workKey || null,
       editionKey: x.editionKey || null,
 
@@ -874,13 +844,10 @@
       updatedAt: x.updatedAt || new Date().toISOString(),
 
       status,
-
-      // personal fields
       notes: x.notes || "",
       quote: x.quote || "",
       rating: clamp(Number(x.rating || 0), 0, 5),
 
-      // sessions: {date: 'YYYY-MM-DD', pages: number}
       sessions: Array.isArray(x.sessions) ? x.sessions
         .filter(s => s && typeof s.date === "string" && Number.isFinite(Number(s.pages)) && Number(s.pages) > 0)
         .map(s => ({ date: s.date.slice(0,10), pages: Number(s.pages) }))
@@ -903,10 +870,7 @@
   function loadGoals(){
     try{
       const g = JSON.parse(localStorage.getItem(GOALS_KEY)) || {};
-      return {
-        daily: Math.max(0, Number(g.daily || 0)),
-        weekly: Math.max(0, Number(g.weekly || 0))
-      };
+      return { daily: Math.max(0, Number(g.daily || 0)), weekly: Math.max(0, Number(g.weekly || 0)) };
     } catch {
       return { daily: 0, weekly: 0 };
     }
@@ -918,7 +882,6 @@
     }));
   }
 
-  // ----------------- Open Library search + details -----------------
   let currentSearchAbort = null;
   let currentDetailAbort = null;
 
@@ -934,7 +897,6 @@
   }
 
   async function fetchWorkOrEditionDetails(workKey, editionKey, signal){
-    // Liefert { description?, pages? } – best effort
     const out = { description: "", pages: null };
 
     const tryWork = async () => {
@@ -962,13 +924,11 @@
       }
     };
 
-    // erst Work (Beschreibung), dann Edition (Seiten)
     await Promise.allSettled([tryWork(), tryEdition()]);
     return out;
   }
 
-  // ----------------- state -----------------
-  let selected = null; // selection from results
+  let selected = null;
   let editingId = null;
 
   function badgeClass(status){
@@ -998,6 +958,19 @@
     document.getElementById("selDesc").textContent = "";
   }
 
+  function updateSelectBadge(){
+    const st = document.getElementById("selStatus").value;
+    const b = document.getElementById("selBadge");
+    b.className = badgeClass(st);
+    b.textContent = statusLabel(st);
+  }
+  function updateEditBadge(){
+    const st = document.getElementById("editStatus").value;
+    const b = document.getElementById("editBadge");
+    b.className = badgeClass(st);
+    b.textContent = statusLabel(st);
+  }
+
   async function openSelectPanel(book) {
     selected = book;
     closeEditPanel();
@@ -1016,7 +989,6 @@
     document.getElementById("selectPanel").style.display = "block";
     document.getElementById("selTotal").focus();
 
-    // Detaildaten nachladen (Beschreibung, Seiten)
     if (currentDetailAbort) currentDetailAbort.abort();
     currentDetailAbort = new AbortController();
 
@@ -1026,7 +998,6 @@
         document.getElementById("selDesc").textContent = String(details.description).slice(0, 280);
       }
       if (Number.isFinite(details.pages) && details.pages > 0) {
-        // nur vorbefüllen, wenn Feld leer ist
         const totalEl = document.getElementById("selTotal");
         if (!String(totalEl.value).trim()) totalEl.value = String(details.pages);
       }
@@ -1035,20 +1006,6 @@
     } finally {
       currentDetailAbort = null;
     }
-  }
-
-  function updateSelectBadge(){
-    const st = document.getElementById("selStatus").value;
-    const b = document.getElementById("selBadge");
-    b.className = badgeClass(st);
-    b.textContent = statusLabel(st);
-  }
-
-  function updateEditBadge(){
-    const st = document.getElementById("editStatus").value;
-    const b = document.getElementById("editBadge");
-    b.className = badgeClass(st);
-    b.textContent = statusLabel(st);
   }
 
   function openEditPanel(book) {
@@ -1071,7 +1028,6 @@
     document.getElementById("editPanel").style.display = "block";
   }
 
-  // ----------------- add selected -----------------
   function addSelectedToList() {
     const err = document.getElementById("selError");
     err.textContent = "";
@@ -1096,12 +1052,12 @@
       const exists = items.some(x => isbnCandidates(x.isbns).some(v => cand.includes(v)));
       if (exists) { err.textContent = "Dieses Buch ist bereits in Ihrer Liste (ISBN)."; return; }
     } else {
-      const exists = items.some(x => (String(x.title).toLowerCase() === String(selected.title).toLowerCase())
-        && (String(x.author||"").toLowerCase() === String(selected.author||"").toLowerCase()));
+      const exists = items.some(x =>
+        (String(x.title).toLowerCase() === String(selected.title).toLowerCase()) &&
+        (String(x.author||"").toLowerCase() === String(selected.author||"").toLowerCase())
+      );
       if (exists) { err.textContent = "Dieses Buch ist bereits in Ihrer Liste (Titel/Autor)."; return; }
     }
-
-    const now = new Date().toISOString();
 
     items.unshift(normalizeBook({
       id: crypto.randomUUID(),
@@ -1110,14 +1066,12 @@
       year: selected.year,
       coverId: selected.coverId || null,
       isbns: isbnCandidates(selected.isbns),
-
       workKey: selected.workKey || null,
       editionKey: selected.editionKey || null,
-
       total,
       current,
       status,
-      updatedAt: now
+      updatedAt: new Date().toISOString()
     }));
 
     saveBooks(items);
@@ -1127,7 +1081,6 @@
     toast("Buch hinzugefügt.");
   }
 
-  // ----------------- sorting + filtering -----------------
   function getSortMode() {
     return document.getElementById("sort").value;
   }
@@ -1169,7 +1122,6 @@
       if (sf !== "all" && String(b.status) !== sf) return false;
       if (onlyActive && !(b.status === "reading" || b.status === "paused")) return false;
       if (onlyCover){
-        // Cover gilt als vorhanden, wenn coverId oder wenigstens eine ISBN (für Cover-API) vorhanden ist
         const has = Boolean(b.coverId) || (isbnCandidates(b.isbns).length > 0);
         if (!has) return false;
       }
@@ -1177,7 +1129,6 @@
     });
   }
 
-  // ----------------- stats, goals, streak -----------------
   function calcWeeklyPages(books){
     const start = startOfWeekISO(new Date());
     const end = addDaysISO(start, 7);
@@ -1201,7 +1152,6 @@
   }
 
   function calcStreak(books){
-    // Streak = aufeinanderfolgende Tage (inkl. heute), an denen mindestens eine Sitzung vorhanden ist
     const set = new Set();
     for (const b of books){
       for (const s of (b.sessions || [])){
@@ -1229,7 +1179,6 @@
     document.getElementById("kpiReadWeek").textContent = String(weekPages);
     document.getElementById("kpiStreak").textContent = String(streak);
 
-    // Goals status
     const goals = loadGoals();
     const today = todayISODate();
     const todayPages = calcDailyPages(books, today);
@@ -1247,7 +1196,6 @@
     updateSummary();
   }
 
-  // ----------------- render my books -----------------
   function renderMyBooks() {
     const raw = loadBooks();
     const filtered = applyFilters(raw);
@@ -1259,7 +1207,6 @@
     empty.style.display = raw.length ? "none" : "block";
 
     if (raw.length && items.length === 0){
-      // Liste ist nicht leer, aber Filter ergibt nichts
       const hint = document.createElement("div");
       hint.className = "empty";
       hint.textContent = "Keine Treffer mit den aktuellen Filtern.";
@@ -1271,7 +1218,6 @@
     for (const b of items) {
       const p = pct(Number(b.current), Number(b.total));
       const metaLine = [b.author, b.year].filter(Boolean).join(" · ");
-
       const badge = `<span class="${badgeClass(b.status)}">${escapeHtml(statusLabel(b.status))}</span>`;
 
       const el = document.createElement("div");
@@ -1340,11 +1286,9 @@
         </div>
       `;
       box.appendChild(el);
-
       setCoverRobust(el.querySelector("img.cover"), b.coverId, b.isbns || []);
     }
 
-    // quick update current page (ohne alert, mit Toast + Shake)
     for (const inp of document.querySelectorAll("input.current")) {
       inp.addEventListener("change", () => {
         const id = inp.getAttribute("data-id");
@@ -1362,8 +1306,6 @@
 
         book.current = v;
         book.updatedAt = new Date().toISOString();
-
-        // optional: wenn 100 %, Status auf fertig (nur wenn vorher nicht fertig)
         if (pct(book.current, book.total) >= 100 && book.status !== "done") book.status = "done";
 
         saveBooks(items);
@@ -1372,7 +1314,6 @@
       });
     }
 
-    // delete
     for (const btn of document.querySelectorAll("button.del")) {
       btn.addEventListener("click", () => {
         const ok = confirm("Buch wirklich löschen?");
@@ -1388,7 +1329,6 @@
       });
     }
 
-    // edit panel
     for (const btn of document.querySelectorAll("button.edit")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-edit");
@@ -1398,7 +1338,6 @@
       });
     }
 
-    // open details inline
     for (const btn of document.querySelectorAll("button.more")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-more");
@@ -1408,7 +1347,6 @@
       });
     }
 
-    // quick "Sitzung" -> öffnet edit panel + fokussiert Sitzung
     for (const btn of document.querySelectorAll("button.log")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-log");
@@ -1420,7 +1358,6 @@
       });
     }
 
-    // inline status change
     for (const sel of document.querySelectorAll("select.inlineStatus")) {
       sel.addEventListener("change", () => {
         const id = sel.getAttribute("data-status-id");
@@ -1436,7 +1373,6 @@
       });
     }
 
-    // rating change
     for (const btn of document.querySelectorAll("button.starBtn")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-star-id");
@@ -1453,7 +1389,6 @@
       });
     }
 
-    // save details (notes/quote)
     for (const btn of document.querySelectorAll("button.saveDetails")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-save");
@@ -1465,8 +1400,8 @@
         const quoteEl = document.querySelector(`textarea.quote[data-quote-id="${CSS.escape(id)}"]`);
         if (notesEl) book.notes = String(notesEl.value || "");
         if (quoteEl) book.quote = String(quoteEl.value || "");
-
         book.updatedAt = new Date().toISOString();
+
         saveBooks(items);
         const hint = document.getElementById("saveHint_" + id);
         if (hint) hint.textContent = "Gespeichert.";
@@ -1478,7 +1413,6 @@
     updateSummary();
   }
 
-  // ----------------- render results -----------------
   function renderResults(docs) {
     const results = document.getElementById("results");
     const resEmpty = document.getElementById("resEmpty");
@@ -1496,8 +1430,7 @@
       const year = d.first_publish_year ? String(d.first_publish_year) : "";
       const coverId = d.cover_i ? String(d.cover_i) : null;
       const isbns = isbnCandidates(d.isbn || []);
-
-      const workKey = d.key ? String(d.key) : null; // usually "/works/..."
+      const workKey = d.key ? String(d.key) : null;
       const editionKey = Array.isArray(d.edition_key) && d.edition_key[0] ? String(d.edition_key[0]) : null;
 
       const el = document.createElement("div");
@@ -1513,12 +1446,10 @@
       results.appendChild(el);
 
       setCoverRobust(el.querySelector("img.cover"), coverId, isbns);
-
       el.addEventListener("click", () => openSelectPanel({ title, author, year, coverId, isbns, workKey, editionKey }));
     }
   }
 
-  // ----------------- actions -----------------
   async function doSearch() {
     const q = document.getElementById("q").value.trim();
     const status = document.getElementById("status");
@@ -1549,7 +1480,6 @@
   }
   const doSearchDebounced = debounce(doSearch, 350);
 
-  // ----------------- edit save -----------------
   function saveEdit() {
     const err = document.getElementById("editError");
     err.textContent = "";
@@ -1575,7 +1505,6 @@
     book.current = current;
     book.status = status;
     book.updatedAt = new Date().toISOString();
-
     if (pct(book.current, book.total) >= 100) book.status = "done";
 
     saveBooks(items);
@@ -1585,7 +1514,6 @@
     toast("Änderungen gespeichert.");
   }
 
-  // ----------------- sessions -----------------
   function addSessionToEditing(pages){
     const err = document.getElementById("editError");
     err.textContent = "";
@@ -1621,7 +1549,6 @@
 
     saveBooks(items);
 
-    // Panel-UI aktualisieren
     document.getElementById("editCurrent").value = String(book.current);
     document.getElementById("editStatus").value = book.status;
     updateEditBadge();
@@ -1632,7 +1559,6 @@
     toast("Lesesitzung eingetragen.");
   }
 
-  // ----------------- next actions -----------------
   function pickNextBook(){
     const items = loadBooks();
     const planned = items.filter(b => b.status === "planned");
@@ -1641,8 +1567,7 @@
       return;
     }
     const pick = planned[Math.floor(Math.random() * planned.length)];
-    const q = document.getElementById("myQuery");
-    q.value = pick.title;
+    document.getElementById("myQuery").value = pick.title;
     renderMyBooks();
     toast("Filter auf ein geplantes Buch gesetzt.");
   }
@@ -1656,13 +1581,11 @@
       return;
     }
     const pick = items[0];
-    const q = document.getElementById("myQuery");
-    q.value = pick.title;
+    document.getElementById("myQuery").value = pick.title;
     renderMyBooks();
     toast("Filter auf ein fast fertiges Buch gesetzt.");
   }
 
-  // ----------------- export / import -----------------
   function exportData(){
     const payload = {
       version: 1,
@@ -1674,7 +1597,7 @@
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = "lesefortschritt-export.json";
+    a.download = "leseverlauf-export.json";
     document.body.appendChild(a);
     a.click();
     a.remove();
@@ -1687,14 +1610,12 @@
       const text = await file.text();
       const data = JSON.parse(text);
 
-      // sehr tolerant importieren
       const books = Array.isArray(data?.books) ? data.books.map(normalizeBook) : [];
       const goals = data?.goals ? {
         daily: Math.max(0, Number(data.goals.daily || 0)),
         weekly: Math.max(0, Number(data.goals.weekly || 0))
       } : loadGoals();
 
-      // Merge-Strategie: anhand ISBN/Title+Author deduplizieren, vorhandene behalten, neue ergänzen
       const existing = loadBooks();
       const merged = [...existing];
 
@@ -1723,7 +1644,6 @@
     }
   }
 
-  // ----------------- prevent wheel changes on number inputs -----------------
   function preventWheelOnNumberInputs() {
     document.addEventListener("wheel", (e) => {
       const el = document.activeElement;
@@ -1733,11 +1653,9 @@
     }, { passive: false });
   }
 
-  // ----------------- wire up -----------------
+  // wire up
   document.getElementById("search").addEventListener("click", doSearch);
-  document.getElementById("q").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") doSearch();
-  });
+  document.getElementById("q").addEventListener("keydown", (e) => { if (e.key === "Enter") doSearch(); });
   document.getElementById("q").addEventListener("input", () => {
     const v = document.getElementById("q").value.trim();
     if (isLikelyIsbn(v) || v.length >= 3) doSearchDebounced();
@@ -1751,13 +1669,6 @@
   document.getElementById("cancelEdit").addEventListener("click", closeEditPanel);
   document.getElementById("editStatus").addEventListener("change", updateEditBadge);
 
-  document.getElementById("sort").addEventListener("change", () => renderMyBooks());
-
-  document.getElementById("myQuery").addEventListener("input", debounce(() => renderMyBooks(), 160));
-  document.getElementById("statusFilter").addEventListener("change", () => renderMyBooks());
-  document.getElementById("hideNoCover").addEventListener("change", () => renderMyBooks());
-  document.getElementById("onlyActive").addEventListener("change", () => renderMyBooks());
-
   document.getElementById("quickPlus10").addEventListener("click", () => addSessionToEditing(10));
   document.getElementById("quickPlus20").addEventListener("click", () => addSessionToEditing(20));
   document.getElementById("addSession").addEventListener("click", () => {
@@ -1770,9 +1681,7 @@
   document.getElementById("pickClosest").addEventListener("click", pickClosestToFinish);
 
   document.getElementById("exportBtn").addEventListener("click", exportData);
-  document.getElementById("importBtn").addEventListener("click", () => {
-    document.getElementById("importFile").click();
-  });
+  document.getElementById("importBtn").addEventListener("click", () => document.getElementById("importFile").click());
   document.getElementById("importFile").addEventListener("change", (e) => {
     const f = e.target.files && e.target.files[0];
     if (f) importDataFromFile(f);
@@ -1786,6 +1695,12 @@
     loadGoalsIntoUI();
     toast("Ziele gespeichert.");
   });
+
+  document.getElementById("sort").addEventListener("change", () => renderMyBooks());
+  document.getElementById("myQuery").addEventListener("input", debounce(() => renderMyBooks(), 160));
+  document.getElementById("statusFilter").addEventListener("change", () => renderMyBooks());
+  document.getElementById("hideNoCover").addEventListener("change", () => renderMyBooks());
+  document.getElementById("onlyActive").addEventListener("change", () => renderMyBooks());
 
   preventWheelOnNumberInputs();
   loadGoalsIntoUI();
