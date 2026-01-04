@@ -24,9 +24,6 @@ lauf<!doctype html>
       --r: 18px;
     }
 
-        <h1>Leseverlauf</h1>
-    <p class="sub">Bücher suchen, hinzufügen, bearbeiten und nach Leseverlauf sortieren.</p>
-
     *{ box-sizing:border-box; }
     body{
       margin:0;
@@ -304,20 +301,26 @@ lauf<!doctype html>
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <div class="topbar">
-      <div class="searchShell" role="search">
-        <div class="bookIcon" aria-hidden="true">
-          <svg viewBox="0 0 24 24">
-            <path d="M6 2h9a3 3 0 0 1 3 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V5a1 1 0 0 0-1-1H6zm2 2h6v2H8V6zm0 4h6v2H8v-2z"/>
-          </svg>
-        </div>
-        <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" />
-        <button id="search" class="btn btnPrimary">Suchen</button>
-      </div>
-    </div>
+ <div class="wrap">
 
-    <div class="grid">
+  <h1>Leseverlauf</h1>
+  <p class="sub">Bücher suchen, hinzufügen, bearbeiten und nach gelesenen Seiten sortieren.</p>
+
+  <div class="topbar">
+    <div class="searchShell" role="search">
+      <div class="bookIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 2h9a3 3 0 0 1 3 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V5a1 1 0 0 0-1-1H6zm2 2h6v2H8V6zm0 4h6v2H8v-2z"/>
+        </svg>
+      </div>
+
+      <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" />
+      <button id="search" class="btn btnPrimary">Suchen</button>
+    </div>
+  </div>
+
+  <div class="grid">
+
       <!-- LEFT: results -->
       <section class="card">
         <div class="head">
