@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Leseverlauf</title>
+  <title>Lesefortschritt</title>
   <style>
     :root{
       /* warm grey background + white cards */
@@ -37,48 +37,19 @@
 
     .wrap{
       max-width: 1060px;
-      margin: 18px auto 60px;
+      margin: 24px auto 60px;
       padding: 0 18px;
-    }
-
-    /* title + subtitle above search */
-    h1{
-      font-size: 22px;
-      margin: 10px 0 6px;
-      text-align:center;
-      letter-spacing: 0.2px;
-    }
-    .sub{
-      text-align:center;
-      color: var(--muted);
-      margin: 0 0 14px;
-      font-size: 13.5px;
-      line-height: 1.35;
-    }
-
-    /* sticky top area (title + search) */
-    .stickyTop{
-      position: sticky;
-      top: 0;
-      z-index: 50;
-      padding-top: 10px;
-      padding-bottom: 14px;
-      margin: 0 -18px 8px; /* extend background to edges of wrap padding */
-      padding-left: 18px;
-      padding-right: 18px;
-      background: linear-gradient(180deg, rgba(231,226,219,0.96), rgba(231,226,219,0.78), rgba(231,226,219,0.00));
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
     }
 
     /* top search bar */
     .topbar{
       display:flex;
       justify-content:center;
+      margin: 14px 0 18px;
     }
     .searchShell{
       width: min(860px, 100%);
-      background: rgba(255,255,255,0.86);
+      background: rgba(255,255,255,0.78);
       border: 1px solid var(--stroke);
       border-radius: 999px;
       box-shadow: var(--shadow);
@@ -117,23 +88,35 @@
       cursor: pointer;
       font-weight: 700;
     }
-    .btn:hover{ background: rgba(255,255,255,0.88); }
+    .btn:hover{ background: rgba(255,255,255,0.85); }
     .btnPrimary{
       border-color: rgba(46,125,50,0.22);
-      background: rgba(46,125,50,0.12);
+      background: rgba(46,125,50,0.10);
     }
-    .btnPrimary:hover{ background: rgba(46,125,50,0.16); }
+    .btnPrimary:hover{ background: rgba(46,125,50,0.14); }
+
+    h1{
+      font-size: 22px;
+      margin: 6px 0 6px;
+      text-align:center;
+      letter-spacing: 0.2px;
+    }
+    .sub{
+      text-align:center;
+      color: var(--muted);
+      margin: 0 0 16px;
+      font-size: 13.5px;
+      line-height: 1.35;
+    }
 
     .grid{
       display:grid;
       grid-template-columns: 1.1fr 0.9fr;
       gap: 16px;
       align-items:start;
-      margin-top: 10px;
     }
     @media (max-width: 920px){
       .grid{ grid-template-columns: 1fr; }
-      .stickyTop{ margin: 0 -18px 10px; }
     }
 
     .card{
@@ -318,28 +301,26 @@
   </style>
 </head>
 <body>
-  <div class="wrap">
+<div class="wrap">
 
-    <!-- Sticky header: title + subtitle + search bar -->
-    <div class="stickyTop">
-      <h1>Lesefortschritt</h1>
-      <p class="sub">Bücher suchen, hinzufügen, bearbeiten und nach Fortschritt sortieren.</p>
+  <h1>Leseverlauf</h1>
+  <p class="sub">Bücher suchen, hinzufügen, bearbeiten und nach gelesenen Seiten sortieren.</p>
 
-      <div class="topbar">
-        <div class="searchShell" role="search">
-          <div class="bookIcon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M6 2h9a3 3 0 0 1 3 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V5a1 1 0 0 0-1-1H6zm2 2h6v2H8V6zm0 4h6v2H8v-2z"/>
-            </svg>
-          </div>
-
-          <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" />
-          <button id="search" class="btn btnPrimary">Suchen</button>
-        </div>
+  <div class="topbar">
+    <div class="searchShell" role="search">
+      <div class="bookIcon" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M6 2h9a3 3 0 0 1 3 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V5a1 1 0 0 0-1-1H6zm2 2h6v2H8V6zm0 4h6v2H8v-2z"/>
+        </svg>
       </div>
-    </div>
 
-    <div class="grid">
+      <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" />
+      <button id="search" class="btn btnPrimary">Suchen</button>
+    </div>
+  </div>
+
+  <div class="grid">
+
       <!-- LEFT: results -->
       <section class="card">
         <div class="head">
@@ -417,7 +398,7 @@
   </div>
 
 <script>
-  const KEY = "reading_progress_books_v5";
+  const KEY = "reading_progress_books_v4";
 
   // -------- storage --------
   function loadBooks() {
@@ -572,11 +553,13 @@
 
     const items = loadBooks();
 
+    // dedupe by ISBN overlap (if any ISBN exists)
     const cand = isbnCandidates(selected.isbns);
     if (cand.length > 0) {
       const exists = items.some(x => isbnCandidates(x.isbns).some(v => cand.includes(v)));
       if (exists) { err.textContent = "Dieses Buch ist bereits in Ihrer Liste (ISBN)."; return; }
     } else {
+      // fallback dedupe by title+author
       const exists = items.some(x => (String(x.title).toLowerCase() === String(selected.title).toLowerCase())
         && (String(x.author||"").toLowerCase() === String(selected.author||"").toLowerCase()));
       if (exists) { err.textContent = "Dieses Buch ist bereits in Ihrer Liste (Titel/Autor)."; return; }
