@@ -6,226 +6,348 @@
   <title>Lesefortschritt</title>
   <style>
     :root{
-      --bg: #0b0f14;
-      --panel: rgba(255,255,255,0.06);
-      --stroke: rgba(255,255,255,0.10);
-      --text: rgba(255,255,255,0.92);
-      --muted: rgba(255,255,255,0.66);
-      --muted2: rgba(255,255,255,0.52);
-      --green: #2ecc71;
-      --danger: #ff4d4d;
-      --shadow: 0 12px 32px rgba(0,0,0,0.45);
+      /* warm grey background + white cards */
+      --bg: #e7e2db;
+      --bg2:#ded7cf;
+
+      --card:#ffffff;
+      --stroke: rgba(0,0,0,0.10);
+      --text: rgba(20,20,20,0.92);
+      --muted: rgba(20,20,20,0.62);
+      --muted2: rgba(20,20,20,0.50);
+
+      --green:#2e7d32;
+      --green2:#43a047;
+
+      --danger:#b71c1c;
+      --shadow: 0 10px 24px rgba(0,0,0,0.10);
       --r: 18px;
     }
-    *{ box-sizing: border-box; }
+
+    *{ box-sizing:border-box; }
     body{
-      margin: 0;
+      margin:0;
       font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
       color: var(--text);
-      background: radial-gradient(1200px 700px at 10% 0%, rgba(46,204,113,0.18), transparent 55%),
-                  radial-gradient(900px 600px at 90% 10%, rgba(0,180,255,0.14), transparent 55%),
-                  linear-gradient(180deg, #070a0f, #0b0f14 45%, #070a0f);
-      min-height: 100vh;
+      background: radial-gradient(1000px 600px at 20% 0%, rgba(46,125,50,0.10), transparent 60%),
+                  radial-gradient(900px 520px at 85% 10%, rgba(160,120,70,0.10), transparent 60%),
+                  linear-gradient(180deg, var(--bg), var(--bg2));
+      min-height:100vh;
     }
-    .wrap{ max-width: 1060px; margin: 26px auto; padding: 0 18px 50px; }
-    header{ display:flex; align-items:flex-end; justify-content:space-between; gap: 14px; margin-bottom: 16px; }
-    h1{ font-size: 26px; margin: 0; letter-spacing: 0.2px; }
-    .sub{ color: var(--muted); font-size: 14px; margin-top: 6px; }
 
-    .grid{ display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 16px; align-items:start; }
-    @media (max-width: 920px){ .grid{ grid-template-columns: 1fr; } }
+    .wrap{
+      max-width: 1060px;
+      margin: 24px auto 60px;
+      padding: 0 18px;
+    }
+
+    /* top search bar like a header */
+    .topbar{
+      display:flex;
+      justify-content:center;
+      margin: 14px 0 18px;
+    }
+    .searchShell{
+      width: min(860px, 100%);
+      background: rgba(255,255,255,0.78);
+      border: 1px solid var(--stroke);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+      padding: 10px 12px;
+      display:flex;
+      align-items:center;
+      gap: 10px;
+    }
+    .bookIcon{
+      width: 34px;
+      height: 34px;
+      border-radius: 999px;
+      display:grid;
+      place-items:center;
+      background: rgba(46,125,50,0.10);
+      border: 1px solid rgba(46,125,50,0.18);
+      flex: 0 0 auto;
+    }
+    .bookIcon svg{ width: 18px; height: 18px; fill: rgba(46,125,50,0.85); }
+
+    .q{
+      flex: 1;
+      border: none;
+      outline: none;
+      background: transparent;
+      font-size: 15px;
+      padding: 10px 4px;
+      color: var(--text);
+    }
+
+    .btn{
+      border: 1px solid var(--stroke);
+      background: #fff;
+      padding: 10px 14px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.85); }
+    .btnPrimary{
+      border-color: rgba(46,125,50,0.22);
+      background: rgba(46,125,50,0.10);
+    }
+    .btnPrimary:hover{ background: rgba(46,125,50,0.14); }
+
+    h1{
+      font-size: 22px;
+      margin: 6px 0 6px;
+      text-align:center;
+      letter-spacing: 0.2px;
+    }
+    .sub{
+      text-align:center;
+      color: var(--muted);
+      margin: 0 0 16px;
+      font-size: 13.5px;
+      line-height: 1.35;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 16px;
+      align-items:start;
+    }
+    @media (max-width: 920px){
+      .grid{ grid-template-columns: 1fr; }
+    }
 
     .card{
-      background: var(--panel);
+      background: var(--card);
       border: 1px solid var(--stroke);
       border-radius: var(--r);
       box-shadow: var(--shadow);
-      overflow: hidden;
+      overflow:hidden;
     }
     .card .head{
       padding: 14px 16px;
       border-bottom: 1px solid var(--stroke);
-      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+      background: linear-gradient(180deg, rgba(0,0,0,0.03), rgba(0,0,0,0.00));
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap: 10px;
     }
-    .card .head .title{ font-weight: 650; font-size: 14.5px; letter-spacing: 0.2px; }
+    .title{
+      font-weight: 800;
+      font-size: 14px;
+      letter-spacing: 0.2px;
+    }
     .card .body{ padding: 14px 16px 16px; }
 
-    .searchRow{ display:flex; gap: 10px; align-items:center; }
-    .input{
-      width:100%;
-      padding: 12px 12px;
-      border-radius: 14px;
+    .status{
+      color: var(--muted2);
+      font-size: 12.5px;
+      min-height: 18px;
+    }
+
+    .results, .myList{
+      margin-top: 12px;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item, .book{
+      display:flex;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 16px;
       border: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.25);
-      color: var(--text);
-      outline: none;
+      background: #fff;
     }
-    .input:focus{
-      border-color: rgba(46,204,113,0.55);
-      box-shadow: 0 0 0 4px rgba(46,204,113,0.10);
-    }
-    .btn{
-      padding: 12px 14px;
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.08);
-      color: var(--text);
-      cursor: pointer;
-      font-weight: 600;
-      letter-spacing: 0.2px;
-      white-space: nowrap;
-    }
-    .btn:hover{ background: rgba(255,255,255,0.10); }
-    .btn:active{ transform: translateY(1px); }
-
-    .hint{ color: var(--muted); font-size: 12.5px; margin-top: 10px; line-height: 1.35; }
-    .status{ margin-top: 12px; font-size: 12.5px; color: var(--muted2); min-height: 18px; }
-
-    .results{ margin-top: 12px; display:flex; flex-direction: column; gap: 10px; }
-
     .item{
-      display:flex; gap: 12px; padding: 12px;
-      border-radius: 16px; border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.05);
-      cursor: pointer;
-      transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+      cursor:pointer;
+      transition: transform 120ms ease, box-shadow 120ms ease;
     }
     .item:hover{
-      background: rgba(255,255,255,0.08);
-      border-color: rgba(255,255,255,0.16);
       transform: translateY(-1px);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.08);
     }
 
     .cover{
-      width: 56px; height: 84px;
+      width: 60px;
+      height: 90px;
       border-radius: 12px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
       object-fit: cover;
+      background: rgba(0,0,0,0.04);
+      border: 1px solid rgba(0,0,0,0.08);
       flex: 0 0 auto;
     }
-    .meta{ flex: 1; min-width: 0; }
-    .meta .t{
-      font-weight: 700; font-size: 14px; line-height: 1.15;
-      margin-bottom: 3px;
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+
+    .meta{ flex:1; min-width:0; }
+    .t{
+      font-weight: 800;
+      font-size: 14px;
+      line-height: 1.15;
+      margin-bottom: 4px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .meta .a{
-      font-size: 12.5px; color: var(--muted);
-      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    .a{
+      font-size: 12.5px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
-    .meta .s{ margin-top: 6px; font-size: 12px; color: var(--muted2); }
-
-    .myList{ display:flex; flex-direction: column; gap: 12px; }
-
-    .book{
-      display:flex; gap: 12px; padding: 14px;
-      border-radius: 18px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.05);
+    .s{
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted2);
     }
-    .book .meta .t{ white-space: normal; }
 
-    .row{ display:flex; align-items:center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+    .bar{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(0,0,0,0.08);
+      overflow:hidden;
+      margin-top: 10px;
+    }
+    .fill{
+      height:100%;
+      width:0%;
+      background: linear-gradient(90deg, var(--green), var(--green2));
+    }
 
+    .row{
+      display:flex;
+      justify-content: space-between;
+      align-items:center;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+    .pill{
+      font-size: 12.5px;
+      color: var(--muted);
+    }
     .miniInput{
       width: 120px;
       padding: 10px 10px;
       border-radius: 12px;
       border: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.22);
-      color: var(--text);
-      outline: none;
+      background: #fff;
+      outline:none;
     }
     .miniInput:focus{
-      border-color: rgba(46,204,113,0.55);
-      box-shadow: 0 0 0 4px rgba(46,204,113,0.10);
-    }
-    .pill{ font-size: 12.5px; color: var(--muted); }
-    .bar{
-      height: 10px; border-radius: 999px;
-      background: rgba(255,255,255,0.10);
-      overflow: hidden; margin-top: 10px;
-      border: 1px solid rgba(255,255,255,0.08);
-    }
-    .fill{
-      height: 100%; width: 0%;
-      background: linear-gradient(90deg, rgba(46,204,113,0.85), rgba(46,204,113,1));
+      border-color: rgba(46,125,50,0.35);
+      box-shadow: 0 0 0 4px rgba(46,125,50,0.10);
     }
 
     .danger{
       padding: 10px 12px;
       border-radius: 12px;
-      border: 1px solid rgba(255,77,77,0.35);
-      background: rgba(255,77,77,0.12);
-      color: rgba(255,255,255,0.92);
-      cursor: pointer;
-      font-weight: 650;
+      border: 1px solid rgba(183,28,28,0.25);
+      background: rgba(183,28,28,0.08);
+      color: rgba(120,0,0,0.95);
+      cursor:pointer;
+      font-weight: 800;
     }
-    .danger:hover{ background: rgba(255,77,77,0.16); }
+    .danger:hover{ background: rgba(183,28,28,0.12); }
 
-    .empty{ color: var(--muted2); font-size: 12.5px; padding: 6px 2px 0; }
+    .ghost{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.02);
+      cursor:pointer;
+      font-weight: 800;
+    }
+    .ghost:hover{ background: rgba(0,0,0,0.04); }
 
-    .selectCard{
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.04);
+    .empty{
+      color: var(--muted2);
+      font-size: 12.5px;
+      padding-top: 4px;
+    }
+
+    /* selection + edit panel */
+    .panel{
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.02);
       border-radius: 16px;
       padding: 12px;
-      margin-bottom: 12px;
+      margin-top: 10px;
       display:none;
     }
-    .selectTop{ display:flex; gap: 12px; align-items:flex-start; }
-    .selectActions{ display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; align-items:center; }
-    .btnPrimary{
-      background: rgba(46,204,113,0.18);
-      border: 1px solid rgba(46,204,113,0.35);
-    }
-    .btnPrimary:hover{ background: rgba(46,204,113,0.22); }
+    .panelTop{ display:flex; gap: 12px; align-items:flex-start; }
+    .panelActions{ display:flex; gap: 10px; flex-wrap: wrap; align-items:center; margin-top: 10px; }
+    .err{ margin-top: 8px; color: #8b0000; font-size: 12.5px; min-height: 16px; }
 
-    .err{
-      margin-top: 8px;
-      color: rgba(255, 120, 120, 0.95);
-      font-size: 12.5px;
-      min-height: 16px;
+    .toolbar{
+      display:flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items:center;
     }
-
-    footer{ margin-top: 10px; color: var(--muted2); font-size: 12px; line-height: 1.35; }
+    select{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: #fff;
+      font-weight: 700;
+      color: var(--text);
+    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <div>
-        <h1>Lesefortschritt</h1>
-        <div class="sub">Bücher suchen, hinzufügen und Fortschritt als grüner Balken verfolgen.</div>
+    <div class="topbar">
+      <div class="searchShell" role="search">
+        <div class="bookIcon" aria-hidden="true">
+          <!-- book icon -->
+          <svg viewBox="0 0 24 24">
+            <path d="M6 2h9a3 3 0 0 1 3 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V5a1 1 0 0 0-1-1H6zm2 2h6v2H8V6zm0 4h6v2H8v-2z"/>
+          </svg>
+        </div>
+        <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" />
+        <button id="search" class="btn btnPrimary">Suchen</button>
       </div>
-    </header>
+    </div>
+
+    <h1>Lesefortschritt</h1>
+    <p class="sub">Bücher suchen, hinzufügen, bearbeiten und nach Fortschritt sortieren.</p>
 
     <div class="grid">
-      <!-- LEFT: Search -->
+      <!-- LEFT: results -->
       <section class="card">
-        <div class="head"><div class="title">Buch suchen</div></div>
+        <div class="head">
+          <div class="title">Suchergebnisse</div>
+        </div>
         <div class="body">
-          <div class="searchRow">
-            <input id="q" class="input" placeholder="ISBN oder Buchtitel eingeben" />
-            <button id="search" class="btn">Suchen</button>
-          </div>
-          <div class="hint">
-            Cover und Metadaten: Open Library. ISBN 10/13 wird erkannt; sonst Titel-Suche.
-          </div>
-          <div id="status" class="status"></div>
+          <div id="status" class="status">Geben Sie eine ISBN oder einen Titel ein.</div>
           <div id="results" class="results"></div>
+          <div class="empty" id="resEmpty" style="display:none;">Keine Treffer.</div>
         </div>
       </section>
 
-      <!-- RIGHT: My books -->
+      <!-- RIGHT: my books -->
       <section class="card">
-        <div class="head"><div class="title">Meine Bücher</div></div>
-        <div class="body">
+        <div class="head">
+          <div class="title">Meine Bücher</div>
+          <div class="toolbar">
+            <label class="pill" for="sort">Sortierung</label>
+            <select id="sort">
+              <option value="updated_desc">Zuletzt aktualisiert</option>
+              <option value="title_asc">Titel A–Z</option>
+              <option value="progress_desc">Fortschritt hoch–runter</option>
+            </select>
+          </div>
+        </div>
 
-          <!-- Selection + add form -->
-          <div id="selectCard" class="selectCard">
-            <div class="selectTop">
+        <div class="body">
+          <!-- add-from-search panel -->
+          <div id="selectPanel" class="panel">
+            <div class="panelTop">
               <img id="selCover" class="cover" alt="Cover" />
               <div class="meta">
                 <div id="selTitle" class="t"></div>
@@ -233,36 +355,49 @@
                 <div class="s">Seitenzahlen eintragen und hinzufügen</div>
               </div>
             </div>
-
-            <div class="selectActions">
-              <span class="pill">Gesamtseiten</span>
+            <div class="panelActions">
+              <span class="pill">Gesamt</span>
               <input id="selTotal" class="miniInput" type="number" min="1" placeholder="z. B. 350" />
-
-              <span class="pill">Aktuelle Seite</span>
+              <span class="pill">Aktuell</span>
               <input id="selCurrent" class="miniInput" type="number" min="0" placeholder="z. B. 20" />
-
               <button id="addSelected" class="btn btnPrimary">Hinzufügen</button>
               <button id="clearSelected" class="btn">Abbrechen</button>
             </div>
-
             <div id="selError" class="err"></div>
           </div>
 
-          <div id="mybooks" class="myList"></div>
-          <div id="empty" class="empty">Noch keine Bücher hinzugefügt.</div>
+          <!-- edit panel -->
+          <div id="editPanel" class="panel">
+            <div class="panelTop">
+              <img id="editCover" class="cover" alt="Cover" />
+              <div class="meta">
+                <div id="editTitle" class="t"></div>
+                <div id="editMeta" class="a"></div>
+                <div class="s">Werte ändern und speichern</div>
+              </div>
+            </div>
+            <div class="panelActions">
+              <span class="pill">Gesamt</span>
+              <input id="editTotal" class="miniInput" type="number" min="1" />
+              <span class="pill">Aktuell</span>
+              <input id="editCurrent" class="miniInput" type="number" min="0" />
+              <button id="saveEdit" class="btn btnPrimary">Speichern</button>
+              <button id="cancelEdit" class="btn">Abbrechen</button>
+            </div>
+            <div id="editError" class="err"></div>
+          </div>
 
-          <footer>
-            Speicherung lokal im Browser (LocalStorage). Kein Login, keine Server-Datenbank.
-          </footer>
+          <div id="mybooks" class="myList"></div>
+          <div id="myEmpty" class="empty">Noch keine Bücher hinzugefügt.</div>
         </div>
       </section>
     </div>
   </div>
 
 <script>
-  const KEY = "reading_progress_books_v3";
+  const KEY = "reading_progress_books_v4";
 
-  // ---- storage ----
+  // -------- storage --------
   function loadBooks() {
     try { return JSON.parse(localStorage.getItem(KEY)) || []; }
     catch { return []; }
@@ -271,7 +406,7 @@
     localStorage.setItem(KEY, JSON.stringify(items));
   }
 
-  // ---- helpers ----
+  // -------- helpers --------
   function escapeHtml(s) {
     return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
   }
@@ -279,17 +414,57 @@
     const t = String(s).replaceAll(/[\s-]/g, "");
     return /^[0-9Xx]{10}$/.test(t) || /^[0-9]{13}$/.test(t);
   }
-  function coverUrlByIsbn(isbn, size="M") {
-    const clean = String(isbn).replaceAll(/[\s-]/g, "");
-    return `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(clean)}-${size}.jpg`;
-  }
   function pct(current, total) {
     if (!Number.isFinite(total) || total <= 0) return 0;
     const p = (current / total) * 100;
     return Math.max(0, Math.min(100, p));
   }
 
-  // ---- Open Library search ----
+  // -------- cover loading (robust) --------
+  function isbnCandidates(isbnArray) {
+    const out = [];
+    for (const x of (isbnArray || [])) {
+      const clean = String(x).replaceAll(/[\s-]/g, "");
+      if (/^[0-9Xx]{10}$/.test(clean) || /^[0-9]{13}$/.test(clean)) out.push(clean);
+    }
+    // prefer 13-digit first (often better)
+    out.sort((a,b) => (b.length - a.length));
+    // dedupe
+    return [...new Set(out)].slice(0, 6);
+  }
+
+  function coverUrlByIsbn(isbn, size="M") {
+    return `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(isbn)}-${size}.jpg`;
+  }
+
+  async function setCoverFromIsbns(imgEl, isbns) {
+    imgEl.style.visibility = "visible";
+    imgEl.src = "";
+    const candidates = isbnCandidates(isbns);
+
+    if (candidates.length === 0) {
+      imgEl.style.visibility = "hidden";
+      return;
+    }
+
+    // try sequentially until one loads
+    let i = 0;
+    const tryNext = () => {
+      if (i >= candidates.length) {
+        imgEl.style.visibility = "hidden";
+        imgEl.src = "";
+        return;
+      }
+      const url = coverUrlByIsbn(candidates[i], "M");
+      i += 1;
+      imgEl.onload = () => { /* success */ };
+      imgEl.onerror = () => tryNext();
+      imgEl.src = url;
+    };
+    tryNext();
+  }
+
+  // -------- Open Library search --------
   async function searchOpenLibrary(query) {
     const q = query.trim();
     const url = isLikelyIsbn(q)
@@ -301,83 +476,64 @@
     return await r.json();
   }
 
-  // ---- selection state ----
-  let selected = null; // { title, author, year, isbn }
+  // -------- selection state --------
+  let selected = null; // { title, author, year, isbns:[] }
+  let editingId = null;
 
-  function setSelected(book) {
+  function openSelectPanel(book) {
     selected = book;
+    closeEditPanel();
 
-    const card = document.getElementById("selectCard");
-    const cover = document.getElementById("selCover");
-    const title = document.getElementById("selTitle");
-    const meta = document.getElementById("selMeta");
+    const panel = document.getElementById("selectPanel");
+    const t = document.getElementById("selTitle");
+    const m = document.getElementById("selMeta");
+    const err = document.getElementById("selError");
     const total = document.getElementById("selTotal");
     const current = document.getElementById("selCurrent");
-    const err = document.getElementById("selError");
 
     err.textContent = "";
     total.value = "";
     current.value = "";
 
-    title.textContent = book.title || "(ohne Titel)";
+    t.textContent = book.title || "(ohne Titel)";
     const authorLine = [book.author, book.year].filter(Boolean).join(" · ");
-    const isbnLine = book.isbn ? (" · ISBN: " + book.isbn) : "";
-    meta.textContent = (authorLine + isbnLine).trim();
+    m.textContent = authorLine;
 
-    if (book.isbn) {
-      cover.style.visibility = "visible";
-      cover.src = coverUrlByIsbn(book.isbn, "M");
-      cover.onerror = () => { cover.src = ""; cover.style.visibility = "hidden"; };
-    } else {
-      cover.src = "";
-      cover.style.visibility = "hidden";
-    }
+    setCoverFromIsbns(document.getElementById("selCover"), book.isbns);
 
-    card.style.display = "block";
+    panel.style.display = "block";
     total.focus();
   }
 
-  function clearSelected() {
+  function closeSelectPanel() {
     selected = null;
-    document.getElementById("selectCard").style.display = "none";
+    document.getElementById("selectPanel").style.display = "none";
     document.getElementById("selError").textContent = "";
-    document.getElementById("selTotal").value = "";
-    document.getElementById("selCurrent").value = "";
   }
 
-  // ---- render search results ----
-  function renderResults(docs) {
-    const results = document.getElementById("results");
-    results.innerHTML = "";
+  function openEditPanel(book) {
+    editingId = book.id;
+    closeSelectPanel();
 
-    if (!docs || docs.length === 0) {
-      results.innerHTML = `<div class="empty">Keine Treffer.</div>`;
-      return;
-    }
+    const panel = document.getElementById("editPanel");
+    document.getElementById("editTitle").textContent = book.title;
+    document.getElementById("editMeta").textContent = [book.author, book.year].filter(Boolean).join(" · ");
+    document.getElementById("editTotal").value = Number(book.total);
+    document.getElementById("editCurrent").value = Number(book.current);
+    document.getElementById("editError").textContent = "";
 
-    for (const d of docs) {
-      const title = d.title || "(ohne Titel)";
-      const author = (d.author_name && d.author_name[0]) ? d.author_name[0] : "";
-      const year = d.first_publish_year ? String(d.first_publish_year) : "";
-      const isbn = (d.isbn && d.isbn[0]) ? d.isbn[0] : null;
+    setCoverFromIsbns(document.getElementById("editCover"), book.isbns);
 
-      const el = document.createElement("div");
-      el.className = "item";
-      el.innerHTML = `
-        <img class="cover" alt="Cover" src="${isbn ? coverUrlByIsbn(isbn,"M") : ""}"
-             onerror="this.src=''; this.style.visibility='hidden';" />
-        <div class="meta">
-          <div class="t">${escapeHtml(title)}</div>
-          <div class="a">${escapeHtml([author, year].filter(Boolean).join(" · "))}${isbn ? " · ISBN: " + escapeHtml(isbn) : ""}</div>
-          <div class="s">Klicken, um rechts auszuwählen</div>
-        </div>
-      `;
-      el.addEventListener("click", () => setSelected({ title, author, year, isbn }));
-      results.appendChild(el);
-    }
+    panel.style.display = "block";
   }
 
-  // ---- add selected to my books ----
+  function closeEditPanel() {
+    editingId = null;
+    document.getElementById("editPanel").style.display = "none";
+    document.getElementById("editError").textContent = "";
+  }
+
+  // -------- add selected --------
   function addSelectedToList() {
     const err = document.getElementById("selError");
     err.textContent = "";
@@ -388,29 +544,20 @@
     const currentRaw = document.getElementById("selCurrent").value;
     const current = currentRaw === "" ? 0 : Number(currentRaw);
 
-    if (!Number.isFinite(total) || total <= 0) {
-      err.textContent = "Bitte eine gültige Gesamtseitenzahl eingeben.";
-      return;
-    }
-    if (!Number.isFinite(current) || current < 0) {
-      err.textContent = "Aktuelle Seite muss 0 oder größer sein.";
-      return;
-    }
-    if (current > total) {
-      err.textContent = "Aktuelle Seite darf nicht größer als Gesamtseiten sein.";
-      return;
-    }
+    if (!Number.isFinite(total) || total <= 0) { err.textContent = "Bitte Gesamtseiten > 0 eingeben."; return; }
+    if (!Number.isFinite(current) || current < 0) { err.textContent = "Aktuelle Seite muss ≥ 0 sein."; return; }
+    if (current > total) { err.textContent = "Aktuelle Seite darf nicht größer als Gesamt sein."; return; }
 
     const items = loadBooks();
 
-    // Duplikate vermeiden (ISBN)
-    if (selected.isbn) {
-      const clean = String(selected.isbn).replaceAll(/[\s-]/g, "");
-      const exists = items.some(x => (x.isbn || "").replaceAll(/[\s-]/g, "") === clean);
-      if (exists) {
-        err.textContent = "Dieses Buch ist bereits in Ihrer Liste (ISBN).";
-        return;
-      }
+    // dedupe by ISBN (any overlap)
+    const cand = isbnCandidates(selected.isbns);
+    if (cand.length > 0) {
+      const exists = items.some(x => {
+        const xIsbns = isbnCandidates(x.isbns);
+        return xIsbns.some(v => cand.includes(v));
+      });
+      if (exists) { err.textContent = "Dieses Buch ist bereits in Ihrer Liste (ISBN)."; return; }
     }
 
     items.unshift({
@@ -418,39 +565,68 @@
       title: selected.title,
       author: selected.author,
       year: selected.year,
-      isbn: selected.isbn,
+      isbns: isbnCandidates(selected.isbns),
       total,
       current,
       updatedAt: new Date().toISOString()
     });
 
     saveBooks(items);
-    clearSelected();
+    closeSelectPanel();
     renderMyBooks();
   }
 
-  // ---- render my books ----
-  function renderMyBooks() {
-    const items = loadBooks();
-    const box = document.getElementById("mybooks");
-    const empty = document.getElementById("empty");
+  // -------- sorting --------
+  function getSortMode() {
+    return document.getElementById("sort").value;
+  }
+  function sortBooks(items) {
+    const mode = getSortMode();
+    const copy = [...items];
 
+    if (mode === "updated_desc") {
+      copy.sort((a,b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+      return copy;
+    }
+
+    if (mode === "title_asc") {
+      copy.sort((a,b) => String(a.title).localeCompare(String(b.title), "de", { sensitivity: "base" }));
+      return copy;
+    }
+
+    if (mode === "progress_desc") {
+      copy.sort((a,b) => {
+        const pa = pct(Number(a.current), Number(a.total));
+        const pb = pct(Number(b.current), Number(b.total));
+        return pb - pa;
+      });
+      return copy;
+    }
+
+    return copy;
+  }
+
+  // -------- render my books --------
+  function renderMyBooks() {
+    const itemsRaw = loadBooks();
+    const items = sortBooks(itemsRaw);
+
+    const box = document.getElementById("mybooks");
+    const empty = document.getElementById("myEmpty");
     box.innerHTML = "";
     empty.style.display = items.length ? "none" : "block";
 
     for (const b of items) {
       const p = pct(Number(b.current), Number(b.total));
       const authorLine = [b.author, b.year].filter(Boolean).join(" · ");
-      const isbnLine = b.isbn ? (" · ISBN: " + b.isbn) : "";
-      const cover = b.isbn ? coverUrlByIsbn(b.isbn, "M") : "";
 
       const el = document.createElement("div");
       el.className = "book";
       el.innerHTML = `
-        <img class="cover" alt="Cover" src="${cover}" onerror="this.src=''; this.style.visibility='hidden';" />
+        <img class="cover" alt="Cover" />
         <div class="meta">
           <div class="t">${escapeHtml(b.title)}</div>
-          <div class="a">${escapeHtml(authorLine)}${escapeHtml(isbnLine)}</div>
+          <div class="a">${escapeHtml(authorLine)}</div>
 
           <div class="row">
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
@@ -458,16 +634,23 @@
               <input class="miniInput current" data-id="${b.id}" type="number" min="0" max="${Number(b.total)}" value="${Number(b.current)}" />
               <span class="pill">von ${Number(b.total)} (${p.toFixed(1)} %)</span>
             </div>
-            <button class="danger" data-del="${b.id}">Löschen</button>
+            <div style="display:flex; gap:10px; flex-wrap:wrap;">
+              <button class="ghost edit" data-edit="${b.id}">Bearbeiten</button>
+              <button class="danger del" data-del="${b.id}">Löschen</button>
+            </div>
           </div>
 
           <div class="bar"><div class="fill" style="width:${p}%;"></div></div>
         </div>
       `;
       box.appendChild(el);
+
+      const img = el.querySelector("img.cover");
+      setCoverFromIsbns(img, b.isbns || []);
+      img.onerror = null; // handled by setCoverFromIsbns
     }
 
-    // Update current page
+    // quick update current page
     for (const inp of document.querySelectorAll("input.current")) {
       inp.addEventListener("change", () => {
         const id = inp.getAttribute("data-id");
@@ -489,24 +672,74 @@
       });
     }
 
-    // Delete
-    for (const btn of document.querySelectorAll("button.danger")) {
+    // delete
+    for (const btn of document.querySelectorAll("button.del")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-del");
         const items = loadBooks().filter(x => x.id !== id);
         saveBooks(items);
+        closeEditPanel();
         renderMyBooks();
+      });
+    }
+
+    // edit
+    for (const btn of document.querySelectorAll("button.edit")) {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-edit");
+        const items = loadBooks();
+        const book = items.find(x => x.id === id);
+        if (book) openEditPanel(book);
       });
     }
   }
 
-  // ---- actions ----
+  // -------- render results --------
+  function renderResults(docs) {
+    const results = document.getElementById("results");
+    const resEmpty = document.getElementById("resEmpty");
+    results.innerHTML = "";
+    resEmpty.style.display = "none";
+
+    if (!docs || docs.length === 0) {
+      resEmpty.style.display = "block";
+      return;
+    }
+
+    for (const d of docs) {
+      const title = d.title || "(ohne Titel)";
+      const author = (d.author_name && d.author_name[0]) ? d.author_name[0] : "";
+      const year = d.first_publish_year ? String(d.first_publish_year) : "";
+      const isbns = isbnCandidates(d.isbn || []);
+
+      const el = document.createElement("div");
+      el.className = "item";
+      el.innerHTML = `
+        <img class="cover" alt="Cover" />
+        <div class="meta">
+          <div class="t">${escapeHtml(title)}</div>
+          <div class="a">${escapeHtml([author, year].filter(Boolean).join(" · "))}</div>
+          <div class="s">Klicken, um rechts hinzuzufügen</div>
+        </div>
+      `;
+      results.appendChild(el);
+
+      const img = el.querySelector("img.cover");
+      setCoverFromIsbns(img, isbns);
+
+      el.addEventListener("click", () => openSelectPanel({ title, author, year, isbns }));
+    }
+  }
+
+  // -------- actions --------
   async function doSearch() {
     const q = document.getElementById("q").value.trim();
     const status = document.getElementById("status");
     const results = document.getElementById("results");
-
+    const resEmpty = document.getElementById("resEmpty");
     results.innerHTML = "";
+    resEmpty.style.display = "none";
+
     if (!q) { status.textContent = "Bitte ISBN oder Titel eingeben."; return; }
 
     status.textContent = "Suche läuft …";
@@ -521,11 +754,44 @@
     }
   }
 
+  // -------- edit save --------
+  function saveEdit() {
+    const err = document.getElementById("editError");
+    err.textContent = "";
+
+    if (!editingId) return;
+
+    const total = Number(document.getElementById("editTotal").value);
+    const current = Number(document.getElementById("editCurrent").value);
+
+    if (!Number.isFinite(total) || total <= 0) { err.textContent = "Gesamtseiten müssen > 0 sein."; return; }
+    if (!Number.isFinite(current) || current < 0) { err.textContent = "Aktuelle Seite muss ≥ 0 sein."; return; }
+    if (current > total) { err.textContent = "Aktuelle Seite darf nicht größer als Gesamt sein."; return; }
+
+    const items = loadBooks();
+    const book = items.find(x => x.id === editingId);
+    if (!book) return;
+
+    book.total = total;
+    book.current = current;
+    book.updatedAt = new Date().toISOString();
+    saveBooks(items);
+
+    closeEditPanel();
+    renderMyBooks();
+  }
+
+  // -------- wire up --------
   document.getElementById("search").addEventListener("click", doSearch);
   document.getElementById("q").addEventListener("keydown", (e) => { if (e.key === "Enter") doSearch(); });
 
   document.getElementById("addSelected").addEventListener("click", addSelectedToList);
-  document.getElementById("clearSelected").addEventListener("click", clearSelected);
+  document.getElementById("clearSelected").addEventListener("click", closeSelectPanel);
+
+  document.getElementById("saveEdit").addEventListener("click", saveEdit);
+  document.getElementById("cancelEdit").addEventListener("click", closeEditPanel);
+
+  document.getElementById("sort").addEventListener("change", () => renderMyBooks());
 
   renderMyBooks();
 </script>
