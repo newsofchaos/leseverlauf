@@ -5,59 +5,321 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Lesefortschritt</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; max-width: 980px; }
-    .card { border: 1px solid #ddd; border-radius: 12px; padding: 14px; margin: 14px 0; }
-    .row { display:flex; gap: 14px; align-items:flex-start; }
-    .col { flex: 1; }
-    label { display:block; margin: 10px 0 4px; }
-    input { width: 100%; padding: 10px; box-sizing: border-box; }
-    button { padding: 10px 14px; cursor: pointer; }
-    .small { color:#555; font-size: 0.95rem; }
-    .muted { color:#666; }
-    .list { display:flex; flex-direction: column; gap: 10px; }
-    .result { display:flex; gap: 12px; padding: 10px; border: 1px solid #eee; border-radius: 10px; cursor: pointer; }
-    .result:hover { border-color: #ccc; }
-    .cover { width: 64px; height: 96px; object-fit: cover; border-radius: 6px; background: #f2f2f2; }
-    .bar { height: 14px; background: #eee; border-radius: 8px; overflow: hidden; margin-top: 10px; }
-    .fill { height: 100%; background: #2e7d32; width: 0%; }
-    .danger { background:#b71c1c; color:#fff; border:none; border-radius:10px; }
-    .inline { display:flex; gap: 10px; align-items:center; flex-wrap: wrap; }
+    :root{
+      --bg: #0b0f14;
+      --panel: rgba(255,255,255,0.06);
+      --panel2: rgba(255,255,255,0.08);
+      --stroke: rgba(255,255,255,0.10);
+      --text: rgba(255,255,255,0.92);
+      --muted: rgba(255,255,255,0.66);
+      --muted2: rgba(255,255,255,0.52);
+      --green: #2ecc71;
+      --danger: #ff4d4d;
+      --shadow: 0 12px 32px rgba(0,0,0,0.45);
+      --r: 18px;
+    }
+
+    *{ box-sizing: border-box; }
+    body{
+      margin: 0;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color: var(--text);
+      background: radial-gradient(1200px 700px at 10% 0%, rgba(46,204,113,0.18), transparent 55%),
+                  radial-gradient(900px 600px at 90% 10%, rgba(0,180,255,0.14), transparent 55%),
+                  linear-gradient(180deg, #070a0f, #0b0f14 45%, #070a0f);
+      min-height: 100vh;
+    }
+
+    .wrap{
+      max-width: 1060px;
+      margin: 26px auto;
+      padding: 0 18px 50px;
+    }
+
+    header{
+      display:flex;
+      align-items:flex-end;
+      justify-content:space-between;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    h1{
+      font-size: 26px;
+      margin: 0;
+      letter-spacing: 0.2px;
+    }
+    .sub{
+      color: var(--muted);
+      font-size: 14px;
+      margin-top: 6px;
+    }
+
+    .grid{
+      display:grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      gap: 16px;
+      align-items:start;
+    }
+    @media (max-width: 920px){
+      .grid{ grid-template-columns: 1fr; }
+    }
+
+    .card{
+      background: var(--panel);
+      border: 1px solid var(--stroke);
+      border-radius: var(--r);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .card .head{
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--stroke);
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
+    }
+    .card .head .title{
+      font-weight: 650;
+      font-size: 14.5px;
+      letter-spacing: 0.2px;
+    }
+    .card .body{
+      padding: 14px 16px 16px;
+    }
+
+    .searchRow{
+      display:flex;
+      gap: 10px;
+      align-items:center;
+    }
+    .input{
+      width:100%;
+      padding: 12px 12px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.25);
+      color: var(--text);
+      outline: none;
+    }
+    .input:focus{
+      border-color: rgba(46,204,113,0.55);
+      box-shadow: 0 0 0 4px rgba(46,204,113,0.10);
+    }
+    .btn{
+      padding: 12px 14px;
+      border-radius: 14px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      cursor: pointer;
+      font-weight: 600;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+    }
+    .btn:hover{ background: rgba(255,255,255,0.10); }
+    .btn:active{ transform: translateY(1px); }
+
+    .hint{
+      color: var(--muted);
+      font-size: 12.5px;
+      margin-top: 10px;
+      line-height: 1.35;
+    }
+    .status{
+      margin-top: 12px;
+      font-size: 12.5px;
+      color: var(--muted2);
+      min-height: 18px;
+    }
+
+    .results{
+      margin-top: 12px;
+      display:flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .item{
+      display:flex;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 16px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+      cursor: pointer;
+      transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
+    }
+    .item:hover{
+      background: rgba(255,255,255,0.08);
+      border-color: rgba(255,255,255,0.16);
+      transform: translateY(-1px);
+    }
+
+    .cover{
+      width: 56px;
+      height: 84px;
+      border-radius: 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+      object-fit: cover;
+      flex: 0 0 auto;
+    }
+    .meta{
+      flex: 1;
+      min-width: 0;
+    }
+    .meta .t{
+      font-weight: 700;
+      font-size: 14px;
+      line-height: 1.15;
+      margin-bottom: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta .a{
+      font-size: 12.5px;
+      color: var(--muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .meta .s{
+      margin-top: 6px;
+      font-size: 12px;
+      color: var(--muted2);
+    }
+
+    .myList{
+      display:flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .book{
+      display:flex;
+      gap: 12px;
+      padding: 14px;
+      border-radius: 18px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.05);
+    }
+
+    .book .meta .t{ white-space: normal; }
+    .book .row{
+      display:flex;
+      align-items:center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 10px;
+    }
+
+    .miniInput{
+      width: 120px;
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(0,0,0,0.22);
+      color: var(--text);
+      outline: none;
+    }
+    .miniInput:focus{
+      border-color: rgba(46,204,113,0.55);
+      box-shadow: 0 0 0 4px rgba(46,204,113,0.10);
+    }
+
+    .pill{
+      font-size: 12.5px;
+      color: var(--muted);
+    }
+
+    .bar{
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.10);
+      overflow: hidden;
+      margin-top: 10px;
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .fill{
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, rgba(46,204,113,0.85), rgba(46,204,113,1));
+    }
+
+    .danger{
+      padding: 10px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(255,77,77,0.35);
+      background: rgba(255,77,77,0.12);
+      color: rgba(255,255,255,0.92);
+      cursor: pointer;
+      font-weight: 650;
+    }
+    .danger:hover{ background: rgba(255,77,77,0.16); }
+
+    .empty{
+      color: var(--muted2);
+      font-size: 12.5px;
+      padding: 6px 2px 0;
+    }
+
+    footer{
+      margin-top: 16px;
+      color: var(--muted2);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    a{ color: rgba(255,255,255,0.85); text-decoration: none; }
+    a:hover{ text-decoration: underline; }
   </style>
 </head>
 <body>
-  <h1>Lesefortschritt</h1>
-
-  <div class="card">
-    <h2>Buch suchen</h2>
-    <p class="small">
-      Eingabe: ISBN (10/13) oder Buchtitel. Cover und Metadaten kommen aus Open Library.
-    </p>
-
-    <div class="inline">
-      <div style="flex:1; min-width: 280px;">
-        <label for="q">ISBN oder Titel</label>
-        <input id="q" placeholder="z. B. 9780140328721 oder Der Zauberberg" />
+  <div class="wrap">
+    <header>
+      <div>
+        <h1>Lesefortschritt</h1>
+        <div class="sub">Bücher suchen, hinzufügen und Fortschritt als grüner Balken verfolgen.</div>
       </div>
-      <div style="min-width: 140px;">
-        <label>&nbsp;</label>
-        <button id="search">Suchen</button>
-      </div>
-    </div>
+    </header>
 
-    <div style="margin-top: 12px;">
-      <div id="status" class="small muted"></div>
-      <div id="results" class="list"></div>
-    </div>
-  </div>
+    <div class="grid">
+      <!-- LEFT: Search -->
+      <section class="card">
+        <div class="head">
+          <div class="title">Buch suchen</div>
+        </div>
+        <div class="body">
+          <div class="searchRow">
+            <input id="q" class="input" placeholder="ISBN oder Buchtitel eingeben" />
+            <button id="search" class="btn">Suchen</button>
+          </div>
+          <div class="hint">
+            Cover und Metadaten kommen aus Open Library. ISBN 10/13 wird erkannt; sonst Titel-Suche.
+          </div>
+          <div id="status" class="status"></div>
+          <div id="results" class="results"></div>
+        </div>
+      </section>
 
-  <div class="card">
-    <h2>Meine Bücher</h2>
-    <div id="mybooks" class="list"></div>
-    <div id="empty" class="small muted">Noch keine Bücher hinzugefügt.</div>
+      <!-- RIGHT: My books -->
+      <section class="card">
+        <div class="head">
+          <div class="title">Meine Bücher</div>
+        </div>
+        <div class="body">
+          <div id="mybooks" class="myList"></div>
+          <div id="empty" class="empty">Noch keine Bücher hinzugefügt.</div>
+          <footer>
+            Speicherung lokal im Browser (LocalStorage). Kein Login, keine Server-Datenbank.
+          </footer>
+        </div>
+      </section>
+    </div>
   </div>
 
 <script>
-  const KEY = "reading_progress_books_v1";
+  const KEY = "reading_progress_books_v2";
 
   function loadBooks() {
     try { return JSON.parse(localStorage.getItem(KEY)) || []; }
@@ -67,12 +329,15 @@
     localStorage.setItem(KEY, JSON.stringify(items));
   }
 
+  function escapeHtml(s) {
+    return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+  }
+
   function isLikelyIsbn(s) {
-    const t = s.replaceAll(/[\s-]/g, "");
+    const t = String(s).replaceAll(/[\s-]/g, "");
     return /^[0-9Xx]{10}$/.test(t) || /^[0-9]{13}$/.test(t);
   }
 
-  // Open Library: Cover URL per ISBN (wenn ISBN vorhanden)
   function coverUrlByIsbn(isbn, size="M") {
     const clean = String(isbn).replaceAll(/[\s-]/g, "");
     return `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(clean)}-${size}.jpg`;
@@ -84,17 +349,11 @@
     return Math.max(0, Math.min(100, p));
   }
 
-  function escapeHtml(s) {
-    return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
-  }
-
   async function searchOpenLibrary(query) {
-    // Search API: /search.json?title=... oder /search.json?q=...
-    // Dokumentation: https://openlibrary.org/dev/docs/api/search :contentReference[oaicite:4]{index=4}
     const q = query.trim();
     const url = isLikelyIsbn(q)
-      ? `https://openlibrary.org/search.json?q=${encodeURIComponent("isbn:" + q)}&limit=10`
-      : `https://openlibrary.org/search.json?title=${encodeURIComponent(q)}&limit=10`;
+      ? `https://openlibrary.org/search.json?q=${encodeURIComponent("isbn:" + q)}&limit=12`
+      : `https://openlibrary.org/search.json?title=${encodeURIComponent(q)}&limit=12`;
 
     const r = await fetch(url);
     if (!r.ok) throw new Error(`HTTP ${r.status}`);
@@ -106,7 +365,7 @@
     results.innerHTML = "";
 
     if (!docs || docs.length === 0) {
-      results.innerHTML = `<div class="small muted">Keine Treffer.</div>`;
+      results.innerHTML = `<div class="empty">Keine Treffer.</div>`;
       return;
     }
 
@@ -117,28 +376,24 @@
       const isbn = (d.isbn && d.isbn[0]) ? d.isbn[0] : null;
 
       const el = document.createElement("div");
-      el.className = "result";
+      el.className = "item";
       el.innerHTML = `
-        <img class="cover" alt="Cover" src="${isbn ? coverUrlByIsbn(isbn,"M") : ""}" onerror="this.style.visibility='hidden';" />
-        <div class="col">
-          <div><strong>${escapeHtml(title)}</strong></div>
-          <div class="small muted">
-            ${author ? escapeHtml(author) : ""}${author && year ? " · " : ""}${year ? escapeHtml(year) : ""}
-            ${isbn ? " · ISBN: " + escapeHtml(isbn) : ""}
-          </div>
-          <div class="small muted">Klicken, um hinzuzufügen</div>
+        <img class="cover" alt="Cover" src="${isbn ? coverUrlByIsbn(isbn,"M") : ""}"
+             onerror="this.src=''; this.style.visibility='hidden';" />
+        <div class="meta">
+          <div class="t">${escapeHtml(title)}</div>
+          <div class="a">${escapeHtml([author, year].filter(Boolean).join(" · "))}${isbn ? " · ISBN: " + escapeHtml(isbn) : ""}</div>
+          <div class="s">Klicken, um hinzuzufügen</div>
         </div>
       `;
-
-      el.addEventListener("click", () => addBookFromResult({ title, author, year, isbn }));
+      el.addEventListener("click", () => addBookFlow({ title, author, year, isbn }));
       results.appendChild(el);
     }
   }
 
-  function addBookFromResult({ title, author, year, isbn }) {
-    const totalStr = prompt("Gesamtseitenzahl eingeben (Pflicht):", "");
+  function addBookFlow({ title, author, year, isbn }) {
+    const totalStr = prompt("Gesamtseitenzahl (Pflicht):", "");
     if (totalStr === null) return;
-
     const total = Number(totalStr);
     if (!Number.isFinite(total) || total <= 0) {
       alert("Ungültige Gesamtseitenzahl.");
@@ -148,23 +403,30 @@
     const currentStr = prompt("Aktuelle Seite (optional, Standard 0):", "0");
     if (currentStr === null) return;
     const current = Number(currentStr);
-
     if (!Number.isFinite(current) || current < 0 || current > total) {
       alert("Ungültige aktuelle Seite.");
       return;
     }
 
     const items = loadBooks();
+
+    // Duplikate (ISBN) vermeiden, falls vorhanden
+    if (isbn) {
+      const clean = String(isbn).replaceAll(/[\s-]/g, "");
+      const exists = items.some(x => (x.isbn || "").replaceAll(/[\s-]/g, "") === clean);
+      if (exists) {
+        alert("Dieses Buch ist bereits in Ihrer Liste (ISBN).");
+        return;
+      }
+    }
+
     items.unshift({
       id: crypto.randomUUID(),
-      title,
-      author,
-      year,
-      isbn,
-      total,
-      current,
+      title, author, year, isbn,
+      total, current,
       updatedAt: new Date().toISOString()
     });
+
     saveBooks(items);
     renderMyBooks();
   }
@@ -178,35 +440,35 @@
     empty.style.display = items.length ? "none" : "block";
 
     for (const b of items) {
-      const p = pct(b.current, b.total);
+      const p = pct(Number(b.current), Number(b.total));
+      const authorLine = [b.author, b.year].filter(Boolean).join(" · ");
+      const isbnLine = b.isbn ? (" · ISBN: " + b.isbn) : "";
+      const cover = b.isbn ? coverUrlByIsbn(b.isbn, "M") : "";
 
       const el = document.createElement("div");
-      el.className = "card";
+      el.className = "book";
       el.innerHTML = `
-        <div class="row">
-          <img class="cover" alt="Cover" src="${b.isbn ? coverUrlByIsbn(b.isbn,"M") : ""}" onerror="this.style.visibility='hidden';" />
-          <div class="col">
-            <div><strong>${escapeHtml(b.title)}</strong></div>
-            <div class="small muted">
-              ${b.author ? escapeHtml(b.author) : ""}${b.author && b.year ? " · " : ""}${b.year ? escapeHtml(b.year) : ""}
-              ${b.isbn ? " · ISBN: " + escapeHtml(b.isbn) : ""}
-            </div>
+        <img class="cover" alt="Cover" src="${cover}" onerror="this.src=''; this.style.visibility='hidden';" />
+        <div class="meta">
+          <div class="t">${escapeHtml(b.title)}</div>
+          <div class="a">${escapeHtml(authorLine)}${escapeHtml(isbnLine)}</div>
 
-            <div class="inline" style="margin-top:10px;">
-              <div class="small">Seite</div>
-              <input data-id="${b.id}" class="current" type="number" min="0" max="${b.total}" value="${b.current}" style="width:120px;" />
-              <div class="small muted">von ${b.total} (${p.toFixed(1)} %)</div>
-              <button class="danger" data-del="${b.id}">Löschen</button>
+          <div class="row">
+            <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
+              <span class="pill">Seite</span>
+              <input class="miniInput current" data-id="${b.id}" type="number" min="0" max="${Number(b.total)}" value="${Number(b.current)}" />
+              <span class="pill">von ${Number(b.total)} (${p.toFixed(1)} %)</span>
             </div>
-
-            <div class="bar"><div class="fill" style="width:${p}%;"></div></div>
+            <button class="danger" data-del="${b.id}">Löschen</button>
           </div>
+
+          <div class="bar"><div class="fill" style="width:${p}%;"></div></div>
         </div>
       `;
-
       box.appendChild(el);
     }
 
+    // Update current page
     for (const inp of document.querySelectorAll("input.current")) {
       inp.addEventListener("change", () => {
         const id = inp.getAttribute("data-id");
@@ -215,9 +477,9 @@
         if (!book) return;
 
         const v = Number(inp.value);
-        if (!Number.isFinite(v) || v < 0 || v > book.total) {
+        if (!Number.isFinite(v) || v < 0 || v > Number(book.total)) {
           alert("Ungültige Seitenzahl.");
-          inp.value = book.current;
+          inp.value = Number(book.current);
           return;
         }
 
@@ -228,6 +490,7 @@
       });
     }
 
+    // Delete
     for (const btn of document.querySelectorAll("button.danger")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-del");
@@ -249,8 +512,9 @@
     status.textContent = "Suche läuft …";
     try {
       const data = await searchOpenLibrary(q);
-      status.textContent = `Treffer: ${data.numFound || 0} (Anzeige max. 10)`;
-      renderResults((data.docs || []).slice(0, 10));
+      const docs = (data.docs || []).slice(0, 12);
+      status.textContent = `Treffer: ${data.numFound || docs.length} (Anzeige: ${docs.length})`;
+      renderResults(docs);
     } catch (e) {
       status.textContent = "Fehler bei der Suche. Bitte später erneut versuchen.";
       console.error(e);
@@ -258,9 +522,7 @@
   }
 
   document.getElementById("search").addEventListener("click", doSearch);
-  document.getElementById("q").addEventListener("keydown", (e) => {
-    if (e.key === "Enter") doSearch();
-  });
+  document.getElementById("q").addEventListener("keydown", (e) => { if (e.key === "Enter") doSearch(); });
 
   renderMyBooks();
 </script>
