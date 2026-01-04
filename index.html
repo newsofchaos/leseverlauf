@@ -5,119 +5,264 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Lesefortschritt</title>
   <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; max-width: 820px; }
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; max-width: 980px; }
+    .card { border: 1px solid #ddd; border-radius: 12px; padding: 14px; margin: 14px 0; }
+    .row { display:flex; gap: 14px; align-items:flex-start; }
+    .col { flex: 1; }
     label { display:block; margin: 10px 0 4px; }
     input { width: 100%; padding: 10px; box-sizing: border-box; }
-    button { padding: 10px 14px; margin-top: 12px; cursor: pointer; }
-    .book { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 12px 0; }
-    .row { display:flex; justify-content:space-between; gap: 12px; align-items:center; }
+    button { padding: 10px 14px; cursor: pointer; }
+    .small { color:#555; font-size: 0.95rem; }
+    .muted { color:#666; }
+    .list { display:flex; flex-direction: column; gap: 10px; }
+    .result { display:flex; gap: 12px; padding: 10px; border: 1px solid #eee; border-radius: 10px; cursor: pointer; }
+    .result:hover { border-color: #ccc; }
+    .cover { width: 64px; height: 96px; object-fit: cover; border-radius: 6px; background: #f2f2f2; }
     .bar { height: 14px; background: #eee; border-radius: 8px; overflow: hidden; margin-top: 10px; }
     .fill { height: 100%; background: #2e7d32; width: 0%; }
-    .small { color:#555; font-size: 0.95rem; }
-    .danger { background:#b71c1c; color:#fff; border:none; border-radius:8px; }
+    .danger { background:#b71c1c; color:#fff; border:none; border-radius:10px; }
+    .inline { display:flex; gap: 10px; align-items:center; flex-wrap: wrap; }
   </style>
 </head>
 <body>
   <h1>Lesefortschritt</h1>
 
-  <div class="book">
-    <h2>Neues Buch</h2>
-    <label for="title">Buchtitel</label>
-    <input id="title" placeholder="z. B. Der Zauberberg" />
+  <div class="card">
+    <h2>Buch suchen</h2>
+    <p class="small">
+      Eingabe: ISBN (10/13) oder Buchtitel. Cover und Metadaten kommen aus Open Library.
+    </p>
 
-    <label for="current">Aktuelle Seite</label>
-    <input id="current" type="number" min="0" placeholder="z. B. 120" />
+    <div class="inline">
+      <div style="flex:1; min-width: 280px;">
+        <label for="q">ISBN oder Titel</label>
+        <input id="q" placeholder="z. B. 9780140328721 oder Der Zauberberg" />
+      </div>
+      <div style="min-width: 140px;">
+        <label>&nbsp;</label>
+        <button id="search">Suchen</button>
+      </div>
+    </div>
 
-    <label for="total">Gesamtseiten</label>
-    <input id="total" type="number" min="1" placeholder="z. B. 900" />
-
-    <button id="add">Speichern</button>
+    <div style="margin-top: 12px;">
+      <div id="status" class="small muted"></div>
+      <div id="results" class="list"></div>
+    </div>
   </div>
 
-  <h2>Meine Bücher</h2>
-  <div id="list"></div>
+  <div class="card">
+    <h2>Meine Bücher</h2>
+    <div id="mybooks" class="list"></div>
+    <div id="empty" class="small muted">Noch keine Bücher hinzugefügt.</div>
+  </div>
 
-  <script>
-    const KEY = "reading_progress_v1";
+<script>
+  const KEY = "reading_progress_books_v1";
 
-    function load() {
-      try { return JSON.parse(localStorage.getItem(KEY)) || []; }
-      catch { return []; }
+  function loadBooks() {
+    try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+    catch { return []; }
+  }
+  function saveBooks(items) {
+    localStorage.setItem(KEY, JSON.stringify(items));
+  }
+
+  function isLikelyIsbn(s) {
+    const t = s.replaceAll(/[\s-]/g, "");
+    return /^[0-9Xx]{10}$/.test(t) || /^[0-9]{13}$/.test(t);
+  }
+
+  // Open Library: Cover URL per ISBN (wenn ISBN vorhanden)
+  function coverUrlByIsbn(isbn, size="M") {
+    const clean = String(isbn).replaceAll(/[\s-]/g, "");
+    return `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(clean)}-${size}.jpg`;
+  }
+
+  function pct(current, total) {
+    if (!Number.isFinite(total) || total <= 0) return 0;
+    const p = (current / total) * 100;
+    return Math.max(0, Math.min(100, p));
+  }
+
+  function escapeHtml(s) {
+    return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
+  }
+
+  async function searchOpenLibrary(query) {
+    // Search API: /search.json?title=... oder /search.json?q=...
+    // Dokumentation: https://openlibrary.org/dev/docs/api/search :contentReference[oaicite:4]{index=4}
+    const q = query.trim();
+    const url = isLikelyIsbn(q)
+      ? `https://openlibrary.org/search.json?q=${encodeURIComponent("isbn:" + q)}&limit=10`
+      : `https://openlibrary.org/search.json?title=${encodeURIComponent(q)}&limit=10`;
+
+    const r = await fetch(url);
+    if (!r.ok) throw new Error(`HTTP ${r.status}`);
+    return await r.json();
+  }
+
+  function renderResults(docs) {
+    const results = document.getElementById("results");
+    results.innerHTML = "";
+
+    if (!docs || docs.length === 0) {
+      results.innerHTML = `<div class="small muted">Keine Treffer.</div>`;
+      return;
     }
-    function save(items) {
-      localStorage.setItem(KEY, JSON.stringify(items));
-    }
 
-    function pct(current, total) {
-      if (!total || total <= 0) return 0;
-      const p = (current / total) * 100;
-      return Math.max(0, Math.min(100, p));
-    }
+    for (const d of docs) {
+      const title = d.title || "(ohne Titel)";
+      const author = (d.author_name && d.author_name[0]) ? d.author_name[0] : "";
+      const year = d.first_publish_year ? String(d.first_publish_year) : "";
+      const isbn = (d.isbn && d.isbn[0]) ? d.isbn[0] : null;
 
-    function render() {
-      const items = load();
-      const list = document.getElementById("list");
-      list.innerHTML = "";
-
-      if (items.length === 0) {
-        list.innerHTML = `<p class="small">Noch keine Einträge.</p>`;
-        return;
-      }
-
-      for (const item of items) {
-        const p = pct(item.current, item.total);
-        const el = document.createElement("div");
-        el.className = "book";
-        el.innerHTML = `
-          <div class="row">
-            <div>
-              <strong>${escapeHtml(item.title)}</strong><br/>
-              <span class="small">${item.current} / ${item.total} Seiten (${p.toFixed(1)} %)</span>
-            </div>
-            <button class="danger" data-id="${item.id}">Löschen</button>
+      const el = document.createElement("div");
+      el.className = "result";
+      el.innerHTML = `
+        <img class="cover" alt="Cover" src="${isbn ? coverUrlByIsbn(isbn,"M") : ""}" onerror="this.style.visibility='hidden';" />
+        <div class="col">
+          <div><strong>${escapeHtml(title)}</strong></div>
+          <div class="small muted">
+            ${author ? escapeHtml(author) : ""}${author && year ? " · " : ""}${year ? escapeHtml(year) : ""}
+            ${isbn ? " · ISBN: " + escapeHtml(isbn) : ""}
           </div>
-          <div class="bar"><div class="fill" style="width:${p}%;"></div></div>
-        `;
-        list.appendChild(el);
-      }
+          <div class="small muted">Klicken, um hinzuzufügen</div>
+        </div>
+      `;
 
-      for (const btn of document.querySelectorAll("button.danger")) {
-        btn.addEventListener("click", () => {
-          const id = btn.getAttribute("data-id");
-          const filtered = load().filter(x => x.id !== id);
-          save(filtered);
-          render();
-        });
-      }
+      el.addEventListener("click", () => addBookFromResult({ title, author, year, isbn }));
+      results.appendChild(el);
+    }
+  }
+
+  function addBookFromResult({ title, author, year, isbn }) {
+    const totalStr = prompt("Gesamtseitenzahl eingeben (Pflicht):", "");
+    if (totalStr === null) return;
+
+    const total = Number(totalStr);
+    if (!Number.isFinite(total) || total <= 0) {
+      alert("Ungültige Gesamtseitenzahl.");
+      return;
     }
 
-    function escapeHtml(s) {
-      return String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    const currentStr = prompt("Aktuelle Seite (optional, Standard 0):", "0");
+    if (currentStr === null) return;
+    const current = Number(currentStr);
+
+    if (!Number.isFinite(current) || current < 0 || current > total) {
+      alert("Ungültige aktuelle Seite.");
+      return;
     }
 
-    document.getElementById("add").addEventListener("click", () => {
-      const title = document.getElementById("title").value.trim();
-      const current = Number(document.getElementById("current").value);
-      const total = Number(document.getElementById("total").value);
-
-      if (!title) { alert("Bitte Buchtitel angeben."); return; }
-      if (!Number.isFinite(current) || current < 0) { alert("Aktuelle Seite ungültig."); return; }
-      if (!Number.isFinite(total) || total <= 0) { alert("Gesamtseiten ungültig."); return; }
-      if (current > total) { alert("Aktuelle Seite darf nicht größer als Gesamtseiten sein."); return; }
-
-      const items = load();
-      items.unshift({ id: crypto.randomUUID(), title, current, total, updatedAt: new Date().toISOString() });
-      save(items);
-
-      document.getElementById("title").value = "";
-      document.getElementById("current").value = "";
-      document.getElementById("total").value = "";
-
-      render();
+    const items = loadBooks();
+    items.unshift({
+      id: crypto.randomUUID(),
+      title,
+      author,
+      year,
+      isbn,
+      total,
+      current,
+      updatedAt: new Date().toISOString()
     });
+    saveBooks(items);
+    renderMyBooks();
+  }
 
-    render();
-  </script>
+  function renderMyBooks() {
+    const items = loadBooks();
+    const box = document.getElementById("mybooks");
+    const empty = document.getElementById("empty");
+
+    box.innerHTML = "";
+    empty.style.display = items.length ? "none" : "block";
+
+    for (const b of items) {
+      const p = pct(b.current, b.total);
+
+      const el = document.createElement("div");
+      el.className = "card";
+      el.innerHTML = `
+        <div class="row">
+          <img class="cover" alt="Cover" src="${b.isbn ? coverUrlByIsbn(b.isbn,"M") : ""}" onerror="this.style.visibility='hidden';" />
+          <div class="col">
+            <div><strong>${escapeHtml(b.title)}</strong></div>
+            <div class="small muted">
+              ${b.author ? escapeHtml(b.author) : ""}${b.author && b.year ? " · " : ""}${b.year ? escapeHtml(b.year) : ""}
+              ${b.isbn ? " · ISBN: " + escapeHtml(b.isbn) : ""}
+            </div>
+
+            <div class="inline" style="margin-top:10px;">
+              <div class="small">Seite</div>
+              <input data-id="${b.id}" class="current" type="number" min="0" max="${b.total}" value="${b.current}" style="width:120px;" />
+              <div class="small muted">von ${b.total} (${p.toFixed(1)} %)</div>
+              <button class="danger" data-del="${b.id}">Löschen</button>
+            </div>
+
+            <div class="bar"><div class="fill" style="width:${p}%;"></div></div>
+          </div>
+        </div>
+      `;
+
+      box.appendChild(el);
+    }
+
+    for (const inp of document.querySelectorAll("input.current")) {
+      inp.addEventListener("change", () => {
+        const id = inp.getAttribute("data-id");
+        const items = loadBooks();
+        const book = items.find(x => x.id === id);
+        if (!book) return;
+
+        const v = Number(inp.value);
+        if (!Number.isFinite(v) || v < 0 || v > book.total) {
+          alert("Ungültige Seitenzahl.");
+          inp.value = book.current;
+          return;
+        }
+
+        book.current = v;
+        book.updatedAt = new Date().toISOString();
+        saveBooks(items);
+        renderMyBooks();
+      });
+    }
+
+    for (const btn of document.querySelectorAll("button.danger")) {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-del");
+        const items = loadBooks().filter(x => x.id !== id);
+        saveBooks(items);
+        renderMyBooks();
+      });
+    }
+  }
+
+  async function doSearch() {
+    const q = document.getElementById("q").value.trim();
+    const status = document.getElementById("status");
+    const results = document.getElementById("results");
+
+    results.innerHTML = "";
+    if (!q) { status.textContent = "Bitte ISBN oder Titel eingeben."; return; }
+
+    status.textContent = "Suche läuft …";
+    try {
+      const data = await searchOpenLibrary(q);
+      status.textContent = `Treffer: ${data.numFound || 0} (Anzeige max. 10)`;
+      renderResults((data.docs || []).slice(0, 10));
+    } catch (e) {
+      status.textContent = "Fehler bei der Suche. Bitte später erneut versuchen.";
+      console.error(e);
+    }
+  }
+
+  document.getElementById("search").addEventListener("click", doSearch);
+  document.getElementById("q").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") doSearch();
+  });
+
+  renderMyBooks();
+</script>
 </body>
 </html>
-
