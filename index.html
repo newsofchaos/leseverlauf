@@ -39,54 +39,34 @@
       margin: 18px auto 60px;
       padding: 0 18px;
     }
-    
-<style>
 
-.topBrand{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 6px;
-  margin: 6px 0 16px;
-}
+    /* Logo + Titel links oben */
+    .topBrand{
+      display:flex;
+      align-items:center;
+      gap: 14px;
+      margin: 6px 0 16px;
+    }
+    .brandLogo{
+      width: 64px;
+      height: 64px;
+      object-fit: contain;
+      display:block;
+    }
+    .brandTitle{
+      font-size: 20px;
+      font-weight: 900;
+      color: rgba(0,0,0,0.92);
+      line-height: 1.1;
+    }
+    .brandSubtitle{
+      font-size: 18px;        /* größer */
+      font-weight: 900;       /* kräftig */
+      color: rgba(0,0,0,0.92);/* schwarz */
+      line-height: 1.15;
+      margin-top: 4px;
+    }
 
-.brandLogo{
-  width: 70px;
-  height: 70px;
-  object-fit: contain;
-  display: block;
-}
-
-.brandTitle{
-  font-size: 20px;
-  font-weight: 900;
-  color: rgba(0,0,0,0.92);
-  line-height: 1.1;
-}
-
-.brandSubtitle{
-  font-size: 18px;
-  font-weight: 500;
-  color: rgba(0,0,0,0.92);
-  line-height: 1.2;
-}
-
-</style>
- 
-
-<body>
-  <div class="wrap">
-    <div class="topBrand">
-      <img class="brandLogo" src="./book-logo.png" alt="Logo" />
-      <div class="brandTitle">Leseverlauf</div>
-      <div class="brandSubtitle">
-        Bücher suchen, hinzufügen und nach Lesestand sortieren.
-      </div>
-    </div>
-    
-    <!-- GRID START -->
-    <div class="grid">
     /* Grid: links 1/3 (Suchergebnisse), rechts 2/3 (Meine Bücher) */
     .grid{
       display:grid;
@@ -471,10 +451,9 @@
 
 <body>
   <div class="wrap">
-       <!-- Logo links oben neben Seitentitel (Bilddatei: book-logo.png im gleichen Ordner) -->
-       <div class="topBrand">
+    <!-- Logo links oben neben Seitentitel (Bilddatei: book-logo.png im gleichen Ordner) -->
+    <div class="topBrand">
       <img class="brandLogo" src="book-logo.png" alt="Logo" />
-      <div class="brandText">
       <div class="brandText">
         <div class="brandTitle">Leseverlauf</div>
         <div class="brandSubtitle">Bücher suchen, hinzufügen und nach Lesestand sortieren.</div>
