@@ -481,66 +481,83 @@
 
     <!-- Search bar (full width, not sticky) -->
     <div class="searchRow">
-      <div class="searchShell" role="search" aria-label="Buchsuche">
-        <div class="bookIcon" aria-hidden="true" title="Buchsuche">
-          <!-- book icon, black -->
-          <!-- Ersetze NUR den SVG-Block im .bookIcon durch diesen hier: -->
-<svg viewBox="0 0 48 48" aria-hidden="true">
-  <defs>
-    <!-- Verlauf: grau -> grün -->
-    <linearGradient id="bookGrad" x1="10" y1="6" x2="38" y2="40" gradientUnits="userSpaceOnUse">
-      <stop offset="0" stop-color="#7a7a7a"/>
-      <stop offset="1" stop-color="#2e7d32"/>
-    </linearGradient>
+<div class="searchRow">
+  <div class="bookLogo" aria-hidden="true">
+    <svg viewBox="0 0 1200 220" role="img" aria-label="Buch-Logo">
+      <defs>
+        <!-- Verlauf grau -> grün -->
+        <linearGradient id="gCover" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#7a7a7a"/>
+          <stop offset="1" stop-color="#2e7d32"/>
+        </linearGradient>
 
-    <!-- dezenter Schlagschatten für räumlichen Eindruck -->
-    <filter id="bookShadow" x="-30%" y="-30%" width="160%" height="160%">
-      <feDropShadow dx="0" dy="1.2" stdDeviation="1.2" flood-color="rgba(0,0,0,0.18)"/>
-    </filter>
-  </defs>
+        <linearGradient id="gSpine" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="rgba(0,0,0,0.18)"/>
+          <stop offset="1" stop-color="rgba(0,0,0,0.06)"/>
+        </linearGradient>
 
-  <!-- 3D Buch: Vorderseite + Rücken + obere Kante -->
-  <g filter="url(#bookShadow)">
-    <!-- Rücken (linke Seitenfläche) -->
-    <path d="M13 10 L19 6 L19 38 L13 42 Z" fill="rgba(0,0,0,0.10)"/>
+        <linearGradient id="gPages" x1="0" y1="0" x2="1" y2="0">
+          <stop offset="0" stop-color="rgba(255,255,255,0.92)"/>
+          <stop offset="1" stop-color="rgba(235,235,235,0.92)"/>
+        </linearGradient>
 
-    <!-- Vorderseite -->
-    <path d="M19 6 H34
-             C36.2 6 38 7.8 38 10 V36
-             C38 38.2 36.2 40 34 40 H19 Z"
-          fill="url(#bookGrad)"/>
+        <!-- Schatten (ohne „Rand-Kasten“) -->
+        <filter id="softShadow" x="-10%" y="-20%" width="120%" height="160%">
+          <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="rgba(0,0,0,0.18)"/>
+        </filter>
+      </defs>
 
-    <!-- obere Kante (räumlich) -->
-    <path d="M13 10 L19 6 H34
-             C36.2 6 38 7.8 38 10
-             L32 14 H17 Z"
-          fill="rgba(255,255,255,0.28)"/>
+      <!-- Räumliches Buch (breit), ohne Umrandungs-Box -->
+      <g filter="url(#softShadow)">
 
-    <!-- Seitenblock (Papier) -->
-    <path d="M17 14 H31
-             C32.7 14 34 15.3 34 17 V34
-             C34 35.7 32.7 37 31 37 H17 Z"
-          fill="rgba(255,255,255,0.70)"/>
+        <!-- Rücken links (3D) -->
+        <path d="M180 55 L260 25 L260 185 L180 205 Z"
+              fill="url(#gSpine)"/>
 
-    <!-- Seitenlinien -->
-    <path d="M20 19 H30" stroke="rgba(0,0,0,0.18)" stroke-width="1.4" stroke-linecap="round"/>
-    <path d="M20 24 H30" stroke="rgba(0,0,0,0.16)" stroke-width="1.4" stroke-linecap="round"/>
-    <path d="M20 29 H28" stroke="rgba(0,0,0,0.14)" stroke-width="1.4" stroke-linecap="round"/>
+        <!-- obere Kante -->
+        <path d="M180 55 L260 25 H980
+                 C1025 25 1060 45 1060 78
+                 L980 108 H260 Z"
+              fill="rgba(255,255,255,0.22)"/>
 
-    <!-- Glanzkante rechts -->
-    <path d="M34 8
-             C35.2 8 36 8.8 36 10 V36
-             C36 37.2 35.2 38 34 38"
-          fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"/>
-  </g>
-</svg>
+        <!-- Front-Cover -->
+        <path d="M260 25 H980
+                 C1025 25 1060 45 1060 78
+                 V170
+                 C1060 195 1032 205 1000 205
+                 H260 Z"
+              fill="url(#gCover)"/>
 
-        </div>
+        <!-- Seitenblock -->
+        <path d="M300 85 H920
+                 C940 85 955 97 955 115
+                 V168
+                 C955 180 945 190 930 190
+                 H300 Z"
+              fill="url(#gPages)"/>
 
-        <label class="srOnly" for="q">Suche nach ISBN oder Buchtitel</label>
-        <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" aria-label="Suche nach ISBN oder Buchtitel" />
-        <button id="search" class="btn btnPrimary" type="button">Suchen</button>
-      </div>
+        <!-- Seitenlinien -->
+        <path d="M330 112 H900" stroke="rgba(0,0,0,0.16)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M330 136 H900" stroke="rgba(0,0,0,0.13)" stroke-width="6" stroke-linecap="round"/>
+        <path d="M330 160 H860" stroke="rgba(0,0,0,0.10)" stroke-width="6" stroke-linecap="round"/>
+
+        <!-- Glanzkante rechts -->
+        <path d="M980 38
+                 C1015 38 1038 52 1038 78
+                 V170
+                 C1038 188 1022 195 1002 195"
+              fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="10" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+
+  <div class="searchShell" role="search" aria-label="Buchsuche">
+    <label class="srOnly" for="q">Suche nach ISBN oder Buchtitel</label>
+    <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" aria-label="Suche nach ISBN oder Buchtitel" />
+    <button id="search" class="btn btnPrimary" type="button">Suchen</button>
+  </div>
+</div>
+
     </div>
 
     <div class="grid">
