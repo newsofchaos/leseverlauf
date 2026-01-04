@@ -478,9 +478,57 @@
       <div class="searchShell" role="search" aria-label="Buchsuche">
         <div class="bookIcon" aria-hidden="true" title="Buchsuche">
           <!-- book icon, black -->
-          <svg viewBox="0 0 24 24" aria-hidden="true">
-            <path d="M6 2h10a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zm0 2a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6zm2 3h6v2H8V7zm0 4h6v2H8v-2zm0 4h6v2H8v-2z"/>
-          </svg>
+          <!-- Ersetze NUR den SVG-Block im .bookIcon durch diesen hier: -->
+<svg viewBox="0 0 48 48" aria-hidden="true">
+  <defs>
+    <!-- Verlauf: grau -> grün -->
+    <linearGradient id="bookGrad" x1="10" y1="6" x2="38" y2="40" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#7a7a7a"/>
+      <stop offset="1" stop-color="#2e7d32"/>
+    </linearGradient>
+
+    <!-- dezenter Schlagschatten für räumlichen Eindruck -->
+    <filter id="bookShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="1.2" stdDeviation="1.2" flood-color="rgba(0,0,0,0.18)"/>
+    </filter>
+  </defs>
+
+  <!-- 3D Buch: Vorderseite + Rücken + obere Kante -->
+  <g filter="url(#bookShadow)">
+    <!-- Rücken (linke Seitenfläche) -->
+    <path d="M13 10 L19 6 L19 38 L13 42 Z" fill="rgba(0,0,0,0.10)"/>
+
+    <!-- Vorderseite -->
+    <path d="M19 6 H34
+             C36.2 6 38 7.8 38 10 V36
+             C38 38.2 36.2 40 34 40 H19 Z"
+          fill="url(#bookGrad)"/>
+
+    <!-- obere Kante (räumlich) -->
+    <path d="M13 10 L19 6 H34
+             C36.2 6 38 7.8 38 10
+             L32 14 H17 Z"
+          fill="rgba(255,255,255,0.28)"/>
+
+    <!-- Seitenblock (Papier) -->
+    <path d="M17 14 H31
+             C32.7 14 34 15.3 34 17 V34
+             C34 35.7 32.7 37 31 37 H17 Z"
+          fill="rgba(255,255,255,0.70)"/>
+
+    <!-- Seitenlinien -->
+    <path d="M20 19 H30" stroke="rgba(0,0,0,0.18)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M20 24 H30" stroke="rgba(0,0,0,0.16)" stroke-width="1.4" stroke-linecap="round"/>
+    <path d="M20 29 H28" stroke="rgba(0,0,0,0.14)" stroke-width="1.4" stroke-linecap="round"/>
+
+    <!-- Glanzkante rechts -->
+    <path d="M34 8
+             C35.2 8 36 8.8 36 10 V36
+             C36 37.2 35.2 38 34 38"
+          fill="none" stroke="rgba(255,255,255,0.35)" stroke-width="2" stroke-linecap="round"/>
+  </g>
+</svg>
+
         </div>
 
         <label class="srOnly" for="q">Suche nach ISBN oder Buchtitel</label>
