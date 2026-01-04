@@ -41,7 +41,7 @@
       padding: 0 18px;
     }
 
-    /* top search bar like a header */
+    /* top search bar */
     .topbar{
       display:flex;
       justify-content:center;
@@ -134,6 +134,7 @@
       justify-content:space-between;
       align-items:center;
       gap: 10px;
+      flex-wrap: wrap;
     }
     .title{
       font-weight: 800;
@@ -270,7 +271,7 @@
       padding-top: 4px;
     }
 
-    /* selection + edit panel */
+    /* selection + edit panels */
     .panel{
       border: 1px solid var(--stroke);
       background: rgba(0,0,0,0.02);
@@ -304,7 +305,6 @@
     <div class="topbar">
       <div class="searchShell" role="search">
         <div class="bookIcon" aria-hidden="true">
-          <!-- book icon -->
           <svg viewBox="0 0 24 24">
             <path d="M6 2h9a3 3 0 0 1 3 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V5a1 1 0 0 0-1-1H6zm2 2h6v2H8V6zm0 4h6v2H8v-2z"/>
           </svg>
@@ -420,48 +420,60 @@
     return Math.max(0, Math.min(100, p));
   }
 
-  // -------- cover loading (robust) --------
+  // -------- cover loading (robust: cover_i first, then ISBNs) --------
+  function coverUrlById(coverId, size="M") {
+    return `https://covers.openlibrary.org/b/id/${encodeURIComponent(coverId)}-${size}.jpg`;
+  }
+  function coverUrlByIsbn(isbn, size="M") {
+    return `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(isbn)}-${size}.jpg`;
+  }
   function isbnCandidates(isbnArray) {
     const out = [];
     for (const x of (isbnArray || [])) {
       const clean = String(x).replaceAll(/[\s-]/g, "");
       if (/^[0-9Xx]{10}$/.test(clean) || /^[0-9]{13}$/.test(clean)) out.push(clean);
     }
-    // prefer 13-digit first (often better)
-    out.sort((a,b) => (b.length - a.length));
-    // dedupe
-    return [...new Set(out)].slice(0, 6);
+    out.sort((a,b) => (b.length - a.length)); // prefer ISBN-13
+    return [...new Set(out)].slice(0, 8);
   }
 
-  function coverUrlByIsbn(isbn, size="M") {
-    return `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(isbn)}-${size}.jpg`;
+  function setCoverHidden(imgEl) {
+    imgEl.src = "";
+    imgEl.style.visibility = "hidden";
   }
 
-  async function setCoverFromIsbns(imgEl, isbns) {
+  function tryLoad(imgEl, url, onOk, onFail) {
+    imgEl.onload = () => onOk();
+    imgEl.onerror = () => onFail();
+    imgEl.src = url;
+  }
+
+  function setCoverRobust(imgEl, coverId, isbns) {
     imgEl.style.visibility = "visible";
     imgEl.src = "";
     const candidates = isbnCandidates(isbns);
 
-    if (candidates.length === 0) {
-      imgEl.style.visibility = "hidden";
+    const tryIsbns = (i) => {
+      if (i >= candidates.length) { setCoverHidden(imgEl); return; }
+      tryLoad(
+        imgEl,
+        coverUrlByIsbn(candidates[i], "M"),
+        () => {},
+        () => tryIsbns(i + 1)
+      );
+    };
+
+    if (coverId) {
+      tryLoad(
+        imgEl,
+        coverUrlById(String(coverId), "M"),
+        () => {},
+        () => tryIsbns(0)
+      );
       return;
     }
 
-    // try sequentially until one loads
-    let i = 0;
-    const tryNext = () => {
-      if (i >= candidates.length) {
-        imgEl.style.visibility = "hidden";
-        imgEl.src = "";
-        return;
-      }
-      const url = coverUrlByIsbn(candidates[i], "M");
-      i += 1;
-      imgEl.onload = () => { /* success */ };
-      imgEl.onerror = () => tryNext();
-      imgEl.src = url;
-    };
-    tryNext();
+    tryIsbns(0);
   }
 
   // -------- Open Library search --------
@@ -476,68 +488,56 @@
     return await r.json();
   }
 
-  // -------- selection state --------
-  let selected = null; // { title, author, year, isbns:[] }
+  // -------- state --------
+  let selected = null; // { title, author, year, coverId, isbns }
   let editingId = null;
-
-  function openSelectPanel(book) {
-    selected = book;
-    closeEditPanel();
-
-    const panel = document.getElementById("selectPanel");
-    const t = document.getElementById("selTitle");
-    const m = document.getElementById("selMeta");
-    const err = document.getElementById("selError");
-    const total = document.getElementById("selTotal");
-    const current = document.getElementById("selCurrent");
-
-    err.textContent = "";
-    total.value = "";
-    current.value = "";
-
-    t.textContent = book.title || "(ohne Titel)";
-    const authorLine = [book.author, book.year].filter(Boolean).join(" · ");
-    m.textContent = authorLine;
-
-    setCoverFromIsbns(document.getElementById("selCover"), book.isbns);
-
-    panel.style.display = "block";
-    total.focus();
-  }
-
-  function closeSelectPanel() {
-    selected = null;
-    document.getElementById("selectPanel").style.display = "none";
-    document.getElementById("selError").textContent = "";
-  }
-
-  function openEditPanel(book) {
-    editingId = book.id;
-    closeSelectPanel();
-
-    const panel = document.getElementById("editPanel");
-    document.getElementById("editTitle").textContent = book.title;
-    document.getElementById("editMeta").textContent = [book.author, book.year].filter(Boolean).join(" · ");
-    document.getElementById("editTotal").value = Number(book.total);
-    document.getElementById("editCurrent").value = Number(book.current);
-    document.getElementById("editError").textContent = "";
-
-    setCoverFromIsbns(document.getElementById("editCover"), book.isbns);
-
-    panel.style.display = "block";
-  }
 
   function closeEditPanel() {
     editingId = null;
     document.getElementById("editPanel").style.display = "none";
     document.getElementById("editError").textContent = "";
   }
+  function closeSelectPanel() {
+    selected = null;
+    document.getElementById("selectPanel").style.display = "none";
+    document.getElementById("selError").textContent = "";
+  }
+
+  function openSelectPanel(book) {
+    selected = book;
+    closeEditPanel();
+
+    document.getElementById("selTitle").textContent = book.title || "(ohne Titel)";
+    document.getElementById("selMeta").textContent = [book.author, book.year].filter(Boolean).join(" · ");
+    document.getElementById("selTotal").value = "";
+    document.getElementById("selCurrent").value = "";
+    document.getElementById("selError").textContent = "";
+
+    setCoverRobust(document.getElementById("selCover"), book.coverId, book.isbns);
+
+    document.getElementById("selectPanel").style.display = "block";
+    document.getElementById("selTotal").focus();
+  }
+
+  function openEditPanel(book) {
+    editingId = book.id;
+    closeSelectPanel();
+
+    document.getElementById("editTitle").textContent = book.title;
+    document.getElementById("editMeta").textContent = [book.author, book.year].filter(Boolean).join(" · ");
+    document.getElementById("editTotal").value = Number(book.total);
+    document.getElementById("editCurrent").value = Number(book.current);
+    document.getElementById("editError").textContent = "";
+
+    setCoverRobust(document.getElementById("editCover"), book.coverId, book.isbns);
+
+    document.getElementById("editPanel").style.display = "block";
+  }
 
   // -------- add selected --------
   function addSelectedToList() {
     const err = document.getElementById("selError");
     err.textContent = "";
-
     if (!selected) return;
 
     const total = Number(document.getElementById("selTotal").value);
@@ -550,14 +550,16 @@
 
     const items = loadBooks();
 
-    // dedupe by ISBN (any overlap)
+    // dedupe by ISBN overlap (if any ISBN exists)
     const cand = isbnCandidates(selected.isbns);
     if (cand.length > 0) {
-      const exists = items.some(x => {
-        const xIsbns = isbnCandidates(x.isbns);
-        return xIsbns.some(v => cand.includes(v));
-      });
+      const exists = items.some(x => isbnCandidates(x.isbns).some(v => cand.includes(v)));
       if (exists) { err.textContent = "Dieses Buch ist bereits in Ihrer Liste (ISBN)."; return; }
+    } else {
+      // fallback dedupe by title+author
+      const exists = items.some(x => (String(x.title).toLowerCase() === String(selected.title).toLowerCase())
+        && (String(x.author||"").toLowerCase() === String(selected.author||"").toLowerCase()));
+      if (exists) { err.textContent = "Dieses Buch ist bereits in Ihrer Liste (Titel/Autor)."; return; }
     }
 
     items.unshift({
@@ -565,6 +567,7 @@
       title: selected.title,
       author: selected.author,
       year: selected.year,
+      coverId: selected.coverId || null,
       isbns: isbnCandidates(selected.isbns),
       total,
       current,
@@ -588,28 +591,21 @@
       copy.sort((a,b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
       return copy;
     }
-
     if (mode === "title_asc") {
       copy.sort((a,b) => String(a.title).localeCompare(String(b.title), "de", { sensitivity: "base" }));
       return copy;
     }
-
     if (mode === "progress_desc") {
-      copy.sort((a,b) => {
-        const pa = pct(Number(a.current), Number(a.total));
-        const pb = pct(Number(b.current), Number(b.total));
-        return pb - pa;
-      });
+      copy.sort((a,b) => pct(Number(b.current), Number(b.total)) - pct(Number(a.current), Number(a.total)));
       return copy;
     }
-
     return copy;
   }
 
   // -------- render my books --------
   function renderMyBooks() {
-    const itemsRaw = loadBooks();
-    const items = sortBooks(itemsRaw);
+    const raw = loadBooks();
+    const items = sortBooks(raw);
 
     const box = document.getElementById("mybooks");
     const empty = document.getElementById("myEmpty");
@@ -618,7 +614,7 @@
 
     for (const b of items) {
       const p = pct(Number(b.current), Number(b.total));
-      const authorLine = [b.author, b.year].filter(Boolean).join(" · ");
+      const metaLine = [b.author, b.year].filter(Boolean).join(" · ");
 
       const el = document.createElement("div");
       el.className = "book";
@@ -626,7 +622,7 @@
         <img class="cover" alt="Cover" />
         <div class="meta">
           <div class="t">${escapeHtml(b.title)}</div>
-          <div class="a">${escapeHtml(authorLine)}</div>
+          <div class="a">${escapeHtml(metaLine)}</div>
 
           <div class="row">
             <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap;">
@@ -645,9 +641,7 @@
       `;
       box.appendChild(el);
 
-      const img = el.querySelector("img.cover");
-      setCoverFromIsbns(img, b.isbns || []);
-      img.onerror = null; // handled by setCoverFromIsbns
+      setCoverRobust(el.querySelector("img.cover"), b.coverId, b.isbns || []);
     }
 
     // quick update current page
@@ -710,6 +704,7 @@
       const title = d.title || "(ohne Titel)";
       const author = (d.author_name && d.author_name[0]) ? d.author_name[0] : "";
       const year = d.first_publish_year ? String(d.first_publish_year) : "";
+      const coverId = d.cover_i ? String(d.cover_i) : null;
       const isbns = isbnCandidates(d.isbn || []);
 
       const el = document.createElement("div");
@@ -724,10 +719,9 @@
       `;
       results.appendChild(el);
 
-      const img = el.querySelector("img.cover");
-      setCoverFromIsbns(img, isbns);
+      setCoverRobust(el.querySelector("img.cover"), coverId, isbns);
 
-      el.addEventListener("click", () => openSelectPanel({ title, author, year, isbns }));
+      el.addEventListener("click", () => openSelectPanel({ title, author, year, coverId, isbns }));
     }
   }
 
@@ -737,6 +731,7 @@
     const status = document.getElementById("status");
     const results = document.getElementById("results");
     const resEmpty = document.getElementById("resEmpty");
+
     results.innerHTML = "";
     resEmpty.style.display = "none";
 
