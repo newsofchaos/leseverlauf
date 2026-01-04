@@ -1,1 +1,123 @@
+<!doctype html>
+<html lang="de">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Lesefortschritt</title>
+  <style>
+    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; margin: 24px; max-width: 820px; }
+    label { display:block; margin: 10px 0 4px; }
+    input { width: 100%; padding: 10px; box-sizing: border-box; }
+    button { padding: 10px 14px; margin-top: 12px; cursor: pointer; }
+    .book { border: 1px solid #ddd; border-radius: 10px; padding: 12px; margin: 12px 0; }
+    .row { display:flex; justify-content:space-between; gap: 12px; align-items:center; }
+    .bar { height: 14px; background: #eee; border-radius: 8px; overflow: hidden; margin-top: 10px; }
+    .fill { height: 100%; background: #2e7d32; width: 0%; }
+    .small { color:#555; font-size: 0.95rem; }
+    .danger { background:#b71c1c; color:#fff; border:none; border-radius:8px; }
+  </style>
+</head>
+<body>
+  <h1>Lesefortschritt</h1>
+
+  <div class="book">
+    <h2>Neues Buch</h2>
+    <label for="title">Buchtitel</label>
+    <input id="title" placeholder="z. B. Der Zauberberg" />
+
+    <label for="current">Aktuelle Seite</label>
+    <input id="current" type="number" min="0" placeholder="z. B. 120" />
+
+    <label for="total">Gesamtseiten</label>
+    <input id="total" type="number" min="1" placeholder="z. B. 900" />
+
+    <button id="add">Speichern</button>
+  </div>
+
+  <h2>Meine Bücher</h2>
+  <div id="list"></div>
+
+  <script>
+    const KEY = "reading_progress_v1";
+
+    function load() {
+      try { return JSON.parse(localStorage.getItem(KEY)) || []; }
+      catch { return []; }
+    }
+    function save(items) {
+      localStorage.setItem(KEY, JSON.stringify(items));
+    }
+
+    function pct(current, total) {
+      if (!total || total <= 0) return 0;
+      const p = (current / total) * 100;
+      return Math.max(0, Math.min(100, p));
+    }
+
+    function render() {
+      const items = load();
+      const list = document.getElementById("list");
+      list.innerHTML = "";
+
+      if (items.length === 0) {
+        list.innerHTML = `<p class="small">Noch keine Einträge.</p>`;
+        return;
+      }
+
+      for (const item of items) {
+        const p = pct(item.current, item.total);
+        const el = document.createElement("div");
+        el.className = "book";
+        el.innerHTML = `
+          <div class="row">
+            <div>
+              <strong>${escapeHtml(item.title)}</strong><br/>
+              <span class="small">${item.current} / ${item.total} Seiten (${p.toFixed(1)} %)</span>
+            </div>
+            <button class="danger" data-id="${item.id}">Löschen</button>
+          </div>
+          <div class="bar"><div class="fill" style="width:${p}%;"></div></div>
+        `;
+        list.appendChild(el);
+      }
+
+      for (const btn of document.querySelectorAll("button.danger")) {
+        btn.addEventListener("click", () => {
+          const id = btn.getAttribute("data-id");
+          const filtered = load().filter(x => x.id !== id);
+          save(filtered);
+          render();
+        });
+      }
+    }
+
+    function escapeHtml(s) {
+      return String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
+    }
+
+    document.getElementById("add").addEventListener("click", () => {
+      const title = document.getElementById("title").value.trim();
+      const current = Number(document.getElementById("current").value);
+      const total = Number(document.getElementById("total").value);
+
+      if (!title) { alert("Bitte Buchtitel angeben."); return; }
+      if (!Number.isFinite(current) || current < 0) { alert("Aktuelle Seite ungültig."); return; }
+      if (!Number.isFinite(total) || total <= 0) { alert("Gesamtseiten ungültig."); return; }
+      if (current > total) { alert("Aktuelle Seite darf nicht größer als Gesamtseiten sein."); return; }
+
+      const items = load();
+      items.unshift({ id: crypto.randomUUID(), title, current, total, updatedAt: new Date().toISOString() });
+      save(items);
+
+      document.getElementById("title").value = "";
+      document.getElementById("current").value = "";
+      document.getElementById("total").value = "";
+
+      render();
+    });
+
+    render();
+  </script>
+</body>
+</html>
 
