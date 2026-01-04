@@ -59,29 +59,41 @@
     .searchRow{
       margin: 0 0 12px;
     }
-    .searchShell{
-      width: 100%;
-      background: rgba(255,255,255,0.92);
-      border: 1px solid var(--stroke);
-      border-radius: 16px;
-      box-shadow: var(--shadow);
-      padding: 12px 12px;
-      display:flex;
-      align-items:center;
-      gap: 10px;
-    }
-    .bookIcon{
-      width: 36px;
-      height: 36px;
-      border-radius: 12px;
-      display:grid;
-      place-items:center;
-      background: rgba(0,0,0,0.03);
-      border: 1px solid rgba(0,0,0,0.10);
-      flex: 0 0 auto;
-    }
-    .bookIcon svg{ width: 20px; height: 20px; fill: rgba(0,0,0,0.92); }
 
+    /* Suchbereich als Block */
+.searchRow{
+  margin: 0 0 12px;
+}
+
+/* Breites Buch-Logo: etwas breiter als die Suchleiste */
+.bookLogo{
+  width: calc(100% + 36px);  /* etwas breiter als der Content-Bereich */
+  margin-left: -18px;        /* gleicht .wrap padding aus */
+  margin-right: -18px;
+  margin-bottom: 10px;
+  display:flex;
+  justify-content:center;
+}
+
+/* Logo-SVG: breit, flach, gut erkennbar */
+.bookLogo svg{
+  width: min(1240px, 104%);
+  height: 84px;
+  display:block;
+}
+
+/* Suchleiste bleibt wie gehabt (seitenbreit) */
+.searchShell{
+  width: 100%;
+  background: rgba(255,255,255,0.92);
+  border: 1px solid var(--stroke);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 12px 12px;
+  display:flex;
+  align-items:center;
+  gap: 10px;
+}
     .q{
       flex: 1;
       border: none;
