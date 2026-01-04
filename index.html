@@ -453,7 +453,83 @@
   <div class="wrap">
     <!-- Logo links oben neben Seitentitel (Bilddatei: book-logo.png im gleichen Ordner) -->
     <div class="topBrand">
-      <img class="brandLogo" src="book-logo.png" alt="Logo" />
+     <!-- Buch-Logo (transparent, direkt in HTML als SVG) -->
+<svg class="brandLogoSvg" viewBox="0 0 96 96" aria-label="Logo" role="img">
+  <defs>
+    <!-- Grau -> Grün Verlauf wie beim Logo -->
+    <linearGradient id="coverGrad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8a8a8a"/>
+      <stop offset="1" stop-color="#2e7d32"/>
+    </linearGradient>
+
+    <!-- Rücken (dunkler) -->
+    <linearGradient id="spineGrad" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="rgba(0,0,0,0.24)"/>
+      <stop offset="1" stop-color="rgba(0,0,0,0.10)"/>
+    </linearGradient>
+
+    <!-- Seiten -->
+    <linearGradient id="pagesGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="rgba(255,255,255,0.96)"/>
+      <stop offset="1" stop-color="rgba(235,235,235,0.92)"/>
+    </linearGradient>
+
+    <!-- Schatten -->
+    <filter id="logoShadow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="3.2" flood-color="rgba(0,0,0,0.22)"/>
+    </filter>
+  </defs>
+
+  <!-- Alles außerhalb bleibt transparent -->
+  <g filter="url(#logoShadow)">
+    <!-- Rücken (links) -->
+    <path d="M22 20 L34 14 L34 82 L22 88 Z" fill="url(#spineGrad)"/>
+
+    <!-- obere Kante -->
+    <path d="M22 20 L34 14 H64
+             C72 14 78 18 78 26
+             L66 32 H34 Z"
+          fill="rgba(255,255,255,0.22)"/>
+
+    <!-- Cover (Front) -->
+    <path d="M34 14 H64
+             C72 14 78 18 78 26
+             V76
+             C78 84 72 88 64 88
+             H34 Z"
+          fill="url(#coverGrad)"/>
+
+    <!-- Seitenblock -->
+    <path d="M40 34 H62
+             C66 34 69 36.5 69 40
+             V78
+             C69 81.5 66 84 62 84
+             H40 Z"
+          fill="url(#pagesGrad)"/>
+
+    <!-- Seitenlinien -->
+    <path d="M44 44 H62" stroke="rgba(0,0,0,0.18)" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M44 52 H62" stroke="rgba(0,0,0,0.15)" stroke-width="2.2" stroke-linecap="round"/>
+    <path d="M44 60 H58" stroke="rgba(0,0,0,0.12)" stroke-width="2.2" stroke-linecap="round"/>
+
+    <!-- Glanzkante rechts -->
+    <path d="M64 18
+             C70 18 74 21 74 26
+             V76
+             C74 81 70 84 64 84"
+          fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="3.2" stroke-linecap="round"/>
+  </g>
+</svg>
+
+<style>
+  /* Damit es exakt wie das Logo-Bild funktioniert */
+  .brandLogoSvg{
+    width: 64px;
+    height: 64px;
+    display: block;
+    flex: 0 0 auto;
+  }
+</style>
       <div class="brandText">
         <div class="brandTitle">Leseverlauf</div>
         <div class="brandSubtitle">Bücher suchen, hinzufügen und nach Lesestand sortieren.</div>
