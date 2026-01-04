@@ -7,8 +7,6 @@
   <style>
     :root{
       --bg: #ececec;
-      --bg2:#ececec;
-
       --card:#ffffff;
       --stroke: rgba(0,0,0,0.10);
       --text: rgba(20,20,20,0.92);
@@ -19,8 +17,6 @@
       --green2:#43a047;
 
       --danger:#b71c1c;
-      --warn:#7a4d00;
-
       --shadow: 0 10px 24px rgba(0,0,0,0.10);
       --r: 18px;
     }
@@ -40,71 +36,39 @@
       padding: 0 18px;
     }
 
-    /* title + subtitle (NOT sticky) */
-    h1{
-      font-size: 22px;
-      margin: 10px 0 6px;
-      text-align:center;
-      letter-spacing: 0.2px;
-    }
-    .sub{
-      text-align:center;
-      color: var(--muted);
-      margin: 0 0 14px;
-      font-size: 13.5px;
-      line-height: 1.35;
-    }
-
-    /* Sticky search bar ONLY (full-width, same bg, blurred) */
-    .stickySearch{
-      position: sticky;
-      top: 0;
-      z-index: 50;
-
-      /* full width beyond .wrap padding */
-      margin: 0 -18px 12px;
-      padding: 12px 18px;
-
-      background: rgba(236,236,236,0.78); /* same hue as bg */
-      backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
-
-      border-bottom: 1px solid rgba(0,0,0,0.06);
-    }
-
-    .topbar{
-      display:flex;
-      justify-content:flex-start; /* left aligned */
+    /* Search bar full width (NOT sticky) */
+    .searchRow{
+      margin: 0 0 12px;
     }
     .searchShell{
-      width: min(920px, 100%);
-      background: rgba(255,255,255,0.86);
+      width: 100%;
+      background: rgba(255,255,255,0.92);
       border: 1px solid var(--stroke);
-      border-radius: 999px;
+      border-radius: 16px;
       box-shadow: var(--shadow);
-      padding: 10px 12px;
+      padding: 12px 12px;
       display:flex;
       align-items:center;
       gap: 10px;
     }
     .bookIcon{
-      width: 34px;
-      height: 34px;
-      border-radius: 999px;
+      width: 36px;
+      height: 36px;
+      border-radius: 12px;
       display:grid;
       place-items:center;
-      background: rgba(46,125,50,0.10);
-      border: 1px solid rgba(46,125,50,0.18);
+      background: rgba(0,0,0,0.03);
+      border: 1px solid rgba(0,0,0,0.10);
       flex: 0 0 auto;
     }
-    .bookIcon svg{ width: 18px; height: 18px; fill: rgba(46,125,50,0.85); }
+    .bookIcon svg{ width: 20px; height: 20px; fill: rgba(0,0,0,0.92); }
 
     .q{
       flex: 1;
       border: none;
       outline: none;
       background: transparent;
-      font-size: 15px;
+      font-size: 16px;
       padding: 10px 4px;
       color: var(--text);
     }
@@ -113,7 +77,7 @@
       border: 1px solid var(--stroke);
       background: #fff;
       padding: 10px 14px;
-      border-radius: 999px;
+      border-radius: 12px;
       cursor: pointer;
       font-weight: 800;
       letter-spacing: 0.2px;
@@ -121,22 +85,40 @@
     }
     .btn:hover{ background: rgba(255,255,255,0.88); }
     .btnPrimary{
-      border-color: rgba(46,125,50,0.22);
-      background: rgba(46,125,50,0.12);
+      border-color: rgba(0,0,0,0.16);
+      background: rgba(0,0,0,0.05);
     }
-    .btnPrimary:hover{ background: rgba(46,125,50,0.16); }
+    .btnPrimary:hover{ background: rgba(0,0,0,0.08); }
+
+    /* Title + subtitle UNDER search */
+    .pageTitle{
+      text-align:center;
+      margin: 6px 0 18px;
+      line-height: 1.2;
+    }
+    .pageTitle .h{
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 0.2px;
+      margin: 0 0 6px;
+      color: rgba(0,0,0,0.92);
+    }
+    .pageTitle .sub{
+      font-size: 18px;           /* larger */
+      font-weight: 900;          /* strong */
+      color: rgba(0,0,0,0.92);   /* black */
+      margin: 0;
+    }
 
     /* layout: results 1/3, my books 2/3 */
     .grid{
       display:grid;
-      grid-template-columns: 1fr 2fr; /* 1/3 : 2/3 */
+      grid-template-columns: 1fr 2fr;
       gap: 16px;
       align-items:start;
-      margin-top: 6px;
     }
     @media (max-width: 980px){
       .grid{ grid-template-columns: 1fr; }
-      .stickySearch{ margin: 0 -18px 12px; }
     }
 
     .card{
@@ -204,6 +186,18 @@
     }
 
     .meta{ flex:1; min-width:0; }
+
+    /* title as clickable link-like button */
+    .tBtn{
+      border: none;
+      background: transparent;
+      padding: 0;
+      text-align: left;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+      width: 100%;
+    }
     .tRow{ display:flex; gap: 8px; align-items:center; min-width:0; }
     .t{
       font-weight: 900;
@@ -216,6 +210,8 @@
       min-width:0;
       flex: 1;
     }
+    .tBtn:hover .t{ text-decoration: underline; }
+
     .a{
       font-size: 12.5px;
       color: var(--muted);
@@ -227,12 +223,6 @@
       margin-top: 6px;
       font-size: 12px;
       color: var(--muted2);
-      line-height: 1.35;
-    }
-    .desc{
-      margin-top: 6px;
-      font-size: 12px;
-      color: rgba(20,20,20,0.72);
       line-height: 1.35;
     }
 
@@ -271,8 +261,8 @@
       outline:none;
     }
     .miniInput:focus{
-      border-color: rgba(46,125,50,0.35);
-      box-shadow: 0 0 0 4px rgba(46,125,50,0.10);
+      border-color: rgba(0,0,0,0.35);
+      box-shadow: 0 0 0 4px rgba(0,0,0,0.08);
     }
 
     .danger{
@@ -342,54 +332,6 @@
     .bPaused{ background: rgba(122,77,0,0.08); border-color: rgba(122,77,0,0.18); color: rgba(122,77,0,0.95); }
     .bDone{ background: rgba(67,160,71,0.12); border-color: rgba(67,160,71,0.22); color: rgba(46,125,50,0.98); }
 
-    .sectionBox{
-      border: 1px solid var(--stroke);
-      background: rgba(0,0,0,0.02);
-      border-radius: 16px;
-      padding: 12px;
-      margin-bottom: 12px;
-    }
-
-    .summaryGrid{
-      display:grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 10px;
-    }
-    @media (min-width: 520px){
-      .summaryGrid{ grid-template-columns: repeat(4, minmax(0, 1fr)); }
-    }
-    .kpi{
-      padding: 10px 10px;
-      border-radius: 14px;
-      border: 1px solid var(--stroke);
-      background: rgba(255,255,255,0.72);
-      display:flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-    .kpi .v{ font-weight: 950; letter-spacing: 0.2px; }
-    .kpi .l{ font-size: 12px; color: var(--muted2); }
-
-    .controlsRow{
-      display:flex;
-      gap: 10px;
-      flex-wrap: wrap;
-      align-items:center;
-      margin-top: 10px;
-    }
-    .smallInput{
-      padding: 10px 12px;
-      border-radius: 12px;
-      border: 1px solid var(--stroke);
-      background: #fff;
-      outline:none;
-      min-width: 180px;
-    }
-    .smallInput:focus{
-      border-color: rgba(46,125,50,0.35);
-      box-shadow: 0 0 0 4px rgba(46,125,50,0.10);
-    }
-
     .dividerLine{
       height: 1px;
       background: rgba(0,0,0,0.06);
@@ -408,7 +350,7 @@
       grid-template-columns: 1fr;
       gap: 10px;
     }
-    @media (min-width: 700px){
+    @media (min-width: 760px){
       .detailsGrid{ grid-template-columns: 1fr 1fr; }
     }
     .field label{
@@ -417,6 +359,17 @@
       color: var(--muted2);
       font-weight: 900;
       margin-bottom: 6px;
+    }
+    .kv{
+      padding: 10px 10px;
+      border-radius: 12px;
+      border: 1px solid var(--stroke);
+      background: rgba(255,255,255,0.82);
+      font-size: 13px;
+      color: rgba(20,20,20,0.86);
+      line-height: 1.35;
+      min-height: 42px;
+      white-space: pre-wrap;
     }
     textarea{
       width:100%;
@@ -431,8 +384,8 @@
       font-size: 13px;
     }
     textarea:focus{
-      border-color: rgba(46,125,50,0.35);
-      box-shadow: 0 0 0 4px rgba(46,125,50,0.10);
+      border-color: rgba(0,0,0,0.35);
+      box-shadow: 0 0 0 4px rgba(0,0,0,0.08);
     }
 
     .stars{
@@ -454,8 +407,8 @@
       place-items:center;
     }
     .starBtn.active{
-      border-color: rgba(46,125,50,0.22);
-      background: rgba(46,125,50,0.10);
+      border-color: rgba(0,0,0,0.20);
+      background: rgba(0,0,0,0.06);
     }
 
     .toastWrap{
@@ -470,7 +423,7 @@
     }
     .toast{
       pointer-events: auto;
-      max-width: 360px;
+      max-width: 380px;
       background: rgba(255,255,255,0.96);
       border: 1px solid var(--stroke);
       border-radius: 14px;
@@ -521,25 +474,26 @@
 <body>
   <div class="wrap">
 
-    <!-- NOT sticky -->
-    <h1>Leseverlauf</h1>
-    <p class="sub">Bücher suchen, hinzufügen und nach Lesestand sortieren.</p>
-
-    <!-- Sticky search only -->
-    <div class="stickySearch">
-      <div class="topbar">
-        <div class="searchShell" role="search" aria-label="Buchsuche">
-          <div class="bookIcon" aria-hidden="true">
-            <svg viewBox="0 0 24 24">
-              <path d="M6 2h9a3 3 0 0 1 3 3v15a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h10V5a1 1 0 0 0-1-1H6zm2 2h6v2H8V6zm0 4h6v2H8v-2z"/>
-            </svg>
-          </div>
-
-          <label class="srOnly" for="q">Suche nach ISBN oder Buchtitel</label>
-          <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" aria-label="Suche nach ISBN oder Buchtitel" />
-          <button id="search" class="btn btnPrimary" type="button">Suchen</button>
+    <!-- Search bar (full width, not sticky) -->
+    <div class="searchRow">
+      <div class="searchShell" role="search" aria-label="Buchsuche">
+        <div class="bookIcon" aria-hidden="true" title="Buchsuche">
+          <!-- book icon, black -->
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M6 2h10a3 3 0 0 1 3 3v14a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3zm0 2a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H6zm2 3h6v2H8V7zm0 4h6v2H8v-2zm0 4h6v2H8v-2z"/>
+          </svg>
         </div>
+
+        <label class="srOnly" for="q">Suche nach ISBN oder Buchtitel</label>
+        <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" aria-label="Suche nach ISBN oder Buchtitel" />
+        <button id="search" class="btn btnPrimary" type="button">Suchen</button>
       </div>
+    </div>
+
+    <!-- Title UNDER search -->
+    <div class="pageTitle">
+      <div class="h">Leseverlauf</div>
+      <p class="sub">Bücher suchen, hinzufügen und nach Lesestand sortieren.</p>
     </div>
 
     <div class="grid">
@@ -570,55 +524,7 @@
         </div>
 
         <div class="body">
-          <div class="sectionBox" aria-label="Übersicht">
-            <div class="summaryGrid">
-              <div class="kpi"><div class="v" id="kpiActive">0</div><div class="l">Aktiv</div></div>
-              <div class="kpi"><div class="v" id="kpiDone">0</div><div class="l">Fertig</div></div>
-              <div class="kpi"><div class="v" id="kpiReadWeek">0</div><div class="l">Diese Woche</div></div>
-              <div class="kpi"><div class="v" id="kpiStreak">0</div><div class="l">Streak</div></div>
-            </div>
-
-            <div class="controlsRow" style="margin-top:12px;">
-              <button id="pickNext" class="btn btnPrimary" type="button">Nächstes Buch auswählen</button>
-              <button id="pickClosest" class="btn" type="button">Fast fertig</button>
-              <button id="exportBtn" class="btn" type="button">Export</button>
-              <button id="importBtn" class="btn" type="button">Import</button>
-              <input id="importFile" type="file" accept="application/json" style="display:none;" />
-            </div>
-
-            <div class="dividerLine"></div>
-
-            <div class="controlsRow" aria-label="Ziele">
-              <span class="pill" style="font-weight:900;">Ziele</span>
-              <label class="pill" for="goalDaily">Seiten/Tag</label>
-              <input id="goalDaily" class="miniInput" type="number" min="0" step="1" placeholder="z. B. 20" />
-              <label class="pill" for="goalWeekly">Seiten/Woche</label>
-              <input id="goalWeekly" class="miniInput" type="number" min="0" step="1" placeholder="z. B. 200" />
-              <button id="saveGoals" class="btn btnPrimary" type="button">Ziele speichern</button>
-              <span class="pill" id="goalStatus" style="min-width: 200px;"></span>
-            </div>
-          </div>
-
-          <div class="sectionBox" aria-label="Filter und Suche">
-            <div class="controlsRow">
-              <input id="myQuery" class="smallInput" placeholder="In meiner Liste suchen (Titel/Autor)" aria-label="In meiner Liste suchen" />
-              <label class="pill" for="statusFilter">Status</label>
-              <select id="statusFilter" aria-label="Statusfilter">
-                <option value="all">Alle</option>
-                <option value="planned">Geplant</option>
-                <option value="reading">Lese ich</option>
-                <option value="paused">Pausiert</option>
-                <option value="done">Fertig</option>
-              </select>
-              <label class="pill" for="hideNoCover">
-                <input id="hideNoCover" type="checkbox" /> Nur mit Cover
-              </label>
-              <label class="pill" for="onlyActive">
-                <input id="onlyActive" type="checkbox" /> Nur aktiv
-              </label>
-            </div>
-          </div>
-
+          <!-- add-from-search panel (kept minimal) -->
           <div id="selectPanel" class="panel" aria-label="Auswahl hinzufügen">
             <div class="panelTop">
               <img id="selCover" class="cover" alt="Cover" loading="lazy" referrerpolicy="no-referrer" />
@@ -628,7 +534,7 @@
                   <span id="selBadge" class="badge bPlanned">Geplant</span>
                 </div>
                 <div id="selMeta" class="a"></div>
-                <div id="selDesc" class="desc"></div>
+                <div id="selDesc" class="s"></div>
                 <div class="s">Seitenzahlen prüfen, Status wählen und hinzufügen</div>
               </div>
             </div>
@@ -653,18 +559,8 @@
             <div id="selError" class="err"></div>
           </div>
 
+          <!-- edit panel (NO cover/title/subtitle duplicated) -->
           <div id="editPanel" class="panel" aria-label="Buch bearbeiten">
-            <div class="panelTop">
-              <img id="editCover" class="cover" alt="Cover" loading="lazy" referrerpolicy="no-referrer" />
-              <div class="meta">
-                <div class="tRow">
-                  <div id="editTitle" class="t"></div>
-                  <span id="editBadge" class="badge bReading">Lese ich</span>
-                </div>
-                <div id="editMeta" class="a"></div>
-                <div class="s">Werte ändern, Status setzen, Details speichern</div>
-              </div>
-            </div>
             <div class="panelActions">
               <label class="pill" for="editStatus">Status</label>
               <select id="editStatus" aria-label="Status bearbeiten">
@@ -709,9 +605,9 @@
   <div class="toastWrap" id="toastWrap" aria-live="polite" aria-label="Benachrichtigungen"></div>
 
 <script>
-  const KEY = "reading_progress_books_v6";
-  const GOALS_KEY = "reading_progress_goals_v1";
+  const KEY = "reading_progress_books_v7";
 
+  // ------------ helpers ------------
   function escapeHtml(s) {
     return String(s ?? "")
       .replaceAll("&","&amp;")
@@ -730,24 +626,6 @@
   function clamp(n, lo, hi){ return Math.max(lo, Math.min(hi, n)); }
   function todayISODate(){
     const d = new Date();
-    const yyyy = d.getFullYear();
-    const mm = String(d.getMonth()+1).padStart(2,"0");
-    const dd = String(d.getDate()).padStart(2,"0");
-    return `${yyyy}-${mm}-${dd}`;
-  }
-  function startOfWeekISO(d=new Date()){
-    const x = new Date(d);
-    const day = (x.getDay() + 6) % 7;
-    x.setHours(0,0,0,0);
-    x.setDate(x.getDate() - day);
-    const yyyy = x.getFullYear();
-    const mm = String(x.getMonth()+1).padStart(2,"0");
-    const dd = String(x.getDate()).padStart(2,"0");
-    return `${yyyy}-${mm}-${dd}`;
-  }
-  function addDaysISO(iso, days){
-    const d = new Date(iso + "T00:00:00");
-    d.setDate(d.getDate() + days);
     const yyyy = d.getFullYear();
     const mm = String(d.getMonth()+1).padStart(2,"0");
     const dd = String(d.getDate()).padStart(2,"0");
@@ -778,6 +656,7 @@
     el.classList.add("shake");
   }
 
+  // ------------ covers ------------
   function coverUrlById(coverId, size="M") {
     return `https://covers.openlibrary.org/b/id/${encodeURIComponent(coverId)}-${size}.jpg`;
   }
@@ -820,9 +699,11 @@
     tryIsbns(0);
   }
 
+  // ------------ storage ------------
   function normalizeBook(x) {
     const total = Number(x.total);
     const current = Number(x.current);
+
     const safeTotal = Number.isFinite(total) && total > 0 ? total : 1;
     const safeCurrent = Number.isFinite(current) && current >= 0 ? Math.min(current, safeTotal) : 0;
 
@@ -836,14 +717,20 @@
       coverId: x.coverId || null,
       isbns: isbnCandidates(x.isbns || []),
 
-      workKey: x.workKey || null,
-      editionKey: x.editionKey || null,
+      // OpenLibrary keys
+      workKey: x.workKey || null,     // "/works/OL..."
+      editionKey: x.editionKey || null, // "OL...M"
+
+      // OpenLibrary details (cached)
+      ol: (x.ol && typeof x.ol === "object") ? x.ol : {},
 
       total: safeTotal,
       current: safeCurrent,
       updatedAt: x.updatedAt || new Date().toISOString(),
 
       status,
+
+      // personal fields
       notes: x.notes || "",
       quote: x.quote || "",
       rating: clamp(Number(x.rating || 0), 0, 5),
@@ -867,21 +754,7 @@
     localStorage.setItem(KEY, JSON.stringify(items));
   }
 
-  function loadGoals(){
-    try{
-      const g = JSON.parse(localStorage.getItem(GOALS_KEY)) || {};
-      return { daily: Math.max(0, Number(g.daily || 0)), weekly: Math.max(0, Number(g.weekly || 0)) };
-    } catch {
-      return { daily: 0, weekly: 0 };
-    }
-  }
-  function saveGoals(g){
-    localStorage.setItem(GOALS_KEY, JSON.stringify({
-      daily: Math.max(0, Number(g.daily || 0)),
-      weekly: Math.max(0, Number(g.weekly || 0))
-    }));
-  }
-
+  // ------------ Open Library fetch ------------
   let currentSearchAbort = null;
   let currentDetailAbort = null;
 
@@ -896,38 +769,85 @@
     return await r.json();
   }
 
-  async function fetchWorkOrEditionDetails(workKey, editionKey, signal){
-    const out = { description: "", pages: null };
-
-    const tryWork = async () => {
-      if (!workKey) return;
-      const url = `https://openlibrary.org${workKey}.json`;
-      const r = await fetch(url, { signal });
-      if (!r.ok) return;
-      const j = await r.json();
-      const desc = j.description;
-      if (typeof desc === "string") out.description = desc;
-      else if (desc && typeof desc.value === "string") out.description = desc.value;
-    };
-
-    const tryEdition = async () => {
-      if (!editionKey) return;
-      const url = `https://openlibrary.org/books/${encodeURIComponent(editionKey)}.json`;
-      const r = await fetch(url, { signal });
-      if (!r.ok) return;
-      const j = await r.json();
-      if (Number.isFinite(Number(j.number_of_pages))) out.pages = Number(j.number_of_pages);
-      if (!out.description) {
-        const desc = j.description;
-        if (typeof desc === "string") out.description = desc;
-        else if (desc && typeof desc.value === "string") out.description = desc.value;
-      }
-    };
-
-    await Promise.allSettled([tryWork(), tryEdition()]);
-    return out;
+  async function fetchWorkJson(workKey, signal){
+    if (!workKey) return null;
+    const url = `https://openlibrary.org${workKey}.json`;
+    const r = await fetch(url, { signal });
+    if (!r.ok) return null;
+    return await r.json();
   }
 
+  async function fetchEditionJson(editionKey, signal){
+    if (!editionKey) return null;
+    const url = `https://openlibrary.org/books/${encodeURIComponent(editionKey)}.json`;
+    const r = await fetch(url, { signal });
+    if (!r.ok) return null;
+    return await r.json();
+  }
+
+  function pickString(v){
+    if (typeof v === "string") return v;
+    if (v && typeof v.value === "string") return v.value;
+    return "";
+  }
+
+  function toList(v){
+    if (!v) return [];
+    if (Array.isArray(v)) return v;
+    return [v];
+  }
+
+  async function fetchAndCacheOpenLibraryDetails(bookId){
+    const items = loadBooks();
+    const book = items.find(b => b.id === bookId);
+    if (!book) return null;
+
+    if (currentDetailAbort) currentDetailAbort.abort();
+    currentDetailAbort = new AbortController();
+
+    try{
+      // Work: description, subjects, excerpts (optional)
+      const [w, e] = await Promise.allSettled([
+        fetchWorkJson(book.workKey, currentDetailAbort.signal),
+        fetchEditionJson(book.editionKey, currentDetailAbort.signal)
+      ]);
+
+      const work = (w.status === "fulfilled") ? w.value : null;
+      const edition = (e.status === "fulfilled") ? e.value : null;
+
+      const ol = {};
+
+      if (work){
+        ol.description = pickString(work.description);
+        ol.subjects = Array.isArray(work.subjects) ? work.subjects.slice(0, 12) : [];
+        ol.first_publish_date = work.first_publish_date || "";
+      }
+      if (edition){
+        ol.publish_date = edition.publish_date || "";
+        ol.publishers = Array.isArray(edition.publishers) ? edition.publishers.slice(0, 6) : [];
+        ol.languages = Array.isArray(edition.languages)
+          ? edition.languages.map(x => x && x.key ? x.key.replace("/languages/","") : "").filter(Boolean).slice(0, 6)
+          : [];
+        ol.number_of_pages = Number.isFinite(Number(edition.number_of_pages)) ? Number(edition.number_of_pages) : null;
+        ol.isbn_10 = isbnCandidates(edition.isbn_10 || []);
+        ol.isbn_13 = isbnCandidates(edition.isbn_13 || []);
+      }
+
+      // cache
+      book.ol = ol;
+      book.updatedAt = new Date().toISOString();
+      saveBooks(items);
+
+      return ol;
+    } catch (e){
+      if (e?.name !== "AbortError") console.error(e);
+      return null;
+    } finally {
+      currentDetailAbort = null;
+    }
+  }
+
+  // ------------ state ------------
   let selected = null;
   let editingId = null;
 
@@ -964,12 +884,6 @@
     b.className = badgeClass(st);
     b.textContent = statusLabel(st);
   }
-  function updateEditBadge(){
-    const st = document.getElementById("editStatus").value;
-    const b = document.getElementById("editBadge");
-    b.className = badgeClass(st);
-    b.textContent = statusLabel(st);
-  }
 
   async function openSelectPanel(book) {
     selected = book;
@@ -989,17 +903,25 @@
     document.getElementById("selectPanel").style.display = "block";
     document.getElementById("selTotal").focus();
 
-    if (currentDetailAbort) currentDetailAbort.abort();
-    currentDetailAbort = new AbortController();
-
+    // best-effort details prefill (description + pages)
     try{
-      const details = await fetchWorkOrEditionDetails(book.workKey, book.editionKey, currentDetailAbort.signal);
-      if (details.description) {
-        document.getElementById("selDesc").textContent = String(details.description).slice(0, 280);
-      }
-      if (Number.isFinite(details.pages) && details.pages > 0) {
-        const totalEl = document.getElementById("selTotal");
-        if (!String(totalEl.value).trim()) totalEl.value = String(details.pages);
+      const tmp = normalizeBook({ ...book, total: 1, current: 0 });
+      // Fetch details without caching (selection not saved yet)
+      if (currentDetailAbort) currentDetailAbort.abort();
+      currentDetailAbort = new AbortController();
+      const [work, edition] = await Promise.allSettled([
+        fetchWorkJson(tmp.workKey, currentDetailAbort.signal),
+        fetchEditionJson(tmp.editionKey, currentDetailAbort.signal)
+      ]);
+      const w = (work.status === "fulfilled") ? work.value : null;
+      const e = (edition.status === "fulfilled") ? edition.value : null;
+
+      const desc = w ? pickString(w.description) : "";
+      if (desc) document.getElementById("selDesc").textContent = String(desc).slice(0, 220);
+
+      const pages = e && Number.isFinite(Number(e.number_of_pages)) ? Number(e.number_of_pages) : null;
+      if (pages && !String(document.getElementById("selTotal").value).trim()){
+        document.getElementById("selTotal").value = String(pages);
       }
     } catch (e){
       if (e?.name !== "AbortError") console.error(e);
@@ -1012,22 +934,18 @@
     editingId = book.id;
     closeSelectPanel();
 
-    document.getElementById("editTitle").textContent = book.title;
-    document.getElementById("editMeta").textContent = [book.author, book.year].filter(Boolean).join(" · ");
     document.getElementById("editTotal").value = Number(book.total);
     document.getElementById("editCurrent").value = Number(book.current);
     document.getElementById("editStatus").value = book.status || "planned";
-    updateEditBadge();
 
     document.getElementById("editError").textContent = "";
     document.getElementById("sessionHint").textContent = "";
     document.getElementById("sessionPages").value = "";
 
-    setCoverRobust(document.getElementById("editCover"), book.coverId, book.isbns);
-
     document.getElementById("editPanel").style.display = "block";
   }
 
+  // ------------ add selected ------------
   function addSelectedToList() {
     const err = document.getElementById("selError");
     err.textContent = "";
@@ -1077,14 +995,13 @@
     saveBooks(items);
     closeSelectPanel();
     renderMyBooks();
-    document.getElementById("q").focus();
     toast("Buch hinzugefügt.");
   }
 
+  // ------------ sorting ------------
   function getSortMode() {
     return document.getElementById("sort").value;
   }
-
   function sortBooks(items) {
     const mode = getSortMode();
     const copy = [...items];
@@ -1098,122 +1015,21 @@
       return copy;
     }
     if (mode === "progress_desc") {
-      copy.sort((a,b) => {
-        const dp = pct(Number(b.current), Number(b.total)) - pct(Number(a.current), Number(a.total));
-        if (dp !== 0) return dp;
-        return String(b.updatedAt).localeCompare(String(a.updatedAt));
-      });
+      copy.sort((a,b) => pct(Number(b.current), Number(b.total)) - pct(Number(a.current), Number(a.total)));
       return copy;
     }
     return copy;
   }
 
-  function applyFilters(items){
-    const q = String(document.getElementById("myQuery").value || "").trim().toLowerCase();
-    const sf = document.getElementById("statusFilter").value;
-    const onlyCover = document.getElementById("hideNoCover").checked;
-    const onlyActive = document.getElementById("onlyActive").checked;
-
-    return items.filter(b => {
-      if (q){
-        const hay = (String(b.title) + " " + String(b.author)).toLowerCase();
-        if (!hay.includes(q)) return false;
-      }
-      if (sf !== "all" && String(b.status) !== sf) return false;
-      if (onlyActive && !(b.status === "reading" || b.status === "paused")) return false;
-      if (onlyCover){
-        const has = Boolean(b.coverId) || (isbnCandidates(b.isbns).length > 0);
-        if (!has) return false;
-      }
-      return true;
-    });
-  }
-
-  function calcWeeklyPages(books){
-    const start = startOfWeekISO(new Date());
-    const end = addDaysISO(start, 7);
-    let sum = 0;
-    for (const b of books){
-      for (const s of (b.sessions || [])){
-        if (s.date >= start && s.date < end) sum += Number(s.pages) || 0;
-      }
-    }
-    return sum;
-  }
-
-  function calcDailyPages(books, dateISO){
-    let sum = 0;
-    for (const b of books){
-      for (const s of (b.sessions || [])){
-        if (s.date === dateISO) sum += Number(s.pages) || 0;
-      }
-    }
-    return sum;
-  }
-
-  function calcStreak(books){
-    const set = new Set();
-    for (const b of books){
-      for (const s of (b.sessions || [])){
-        if (s?.date) set.add(s.date);
-      }
-    }
-    let streak = 0;
-    let d = todayISODate();
-    while (set.has(d)){
-      streak += 1;
-      d = addDaysISO(d, -1);
-    }
-    return streak;
-  }
-
-  function updateSummary(){
-    const books = loadBooks();
-    const active = books.filter(b => b.status === "reading" || b.status === "paused").length;
-    const done = books.filter(b => b.status === "done").length;
-    const weekPages = calcWeeklyPages(books);
-    const streak = calcStreak(books);
-
-    document.getElementById("kpiActive").textContent = String(active);
-    document.getElementById("kpiDone").textContent = String(done);
-    document.getElementById("kpiReadWeek").textContent = String(weekPages);
-    document.getElementById("kpiStreak").textContent = String(streak);
-
-    const goals = loadGoals();
-    const today = todayISODate();
-    const todayPages = calcDailyPages(books, today);
-
-    const parts = [];
-    if (goals.daily > 0) parts.push(`Heute: ${todayPages}/${goals.daily}`);
-    if (goals.weekly > 0) parts.push(`Woche: ${weekPages}/${goals.weekly}`);
-    document.getElementById("goalStatus").textContent = parts.join(" · ");
-  }
-
-  function loadGoalsIntoUI(){
-    const g = loadGoals();
-    document.getElementById("goalDaily").value = g.daily ? String(g.daily) : "";
-    document.getElementById("goalWeekly").value = g.weekly ? String(g.weekly) : "";
-    updateSummary();
-  }
-
+  // ------------ render my books ------------
   function renderMyBooks() {
     const raw = loadBooks();
-    const filtered = applyFilters(raw);
-    const items = sortBooks(filtered);
+    const items = sortBooks(raw);
 
     const box = document.getElementById("mybooks");
     const empty = document.getElementById("myEmpty");
     box.innerHTML = "";
     empty.style.display = raw.length ? "none" : "block";
-
-    if (raw.length && items.length === 0){
-      const hint = document.createElement("div");
-      hint.className = "empty";
-      hint.textContent = "Keine Treffer mit den aktuellen Filtern.";
-      box.appendChild(hint);
-      updateSummary();
-      return;
-    }
 
     for (const b of items) {
       const p = pct(Number(b.current), Number(b.total));
@@ -1226,7 +1042,9 @@
         <img class="cover" alt="Cover" loading="lazy" referrerpolicy="no-referrer" />
         <div class="meta">
           <div class="tRow">
-            <div class="t" title="${escapeHtml(b.title)}">${escapeHtml(b.title)}</div>
+            <button class="tBtn" type="button" data-open-edit="${b.id}">
+              <div class="t" title="${escapeHtml(b.title)}">${escapeHtml(b.title)}</div>
+            </button>
             ${badge}
           </div>
           <div class="a">${escapeHtml(metaLine)}</div>
@@ -1238,7 +1056,6 @@
               <span class="pill">von ${Number(b.total)} (${p.toFixed(1)} %)</span>
             </div>
             <div style="display:flex; gap:10px; flex-wrap:wrap;">
-              <button class="ghost log" data-log="${b.id}" type="button">Sitzung</button>
               <button class="ghost more" data-more="${b.id}" type="button">Details</button>
               <button class="ghost edit" data-edit="${b.id}" type="button">Bearbeiten</button>
               <button class="danger del" data-del="${b.id}" type="button">Löschen</button>
@@ -1247,24 +1064,37 @@
 
           <div class="bar"><div class="fill" style="width:${p}%;"></div></div>
 
+          <!-- Details: show OpenLibrary info (fetched on demand) + personal fields -->
           <div class="details" id="details_${b.id}">
             <div class="detailsGrid">
               <div class="field">
-                <label>Status</label>
-                <select class="inlineStatus" data-status-id="${b.id}">
-                  <option value="planned"${b.status==="planned"?" selected":""}>Geplant</option>
-                  <option value="reading"${b.status==="reading"?" selected":""}>Lese ich</option>
-                  <option value="paused"${b.status==="paused"?" selected":""}>Pausiert</option>
-                  <option value="done"${b.status==="done"?" selected":""}>Fertig</option>
-                </select>
+                <label>Beschreibung</label>
+                <div class="kv" id="ol_desc_${b.id}">${escapeHtml((b.ol && b.ol.description) ? String(b.ol.description).slice(0, 600) : "Noch nicht geladen.")}</div>
               </div>
 
               <div class="field">
-                <label>Bewertung</label>
-                <div class="stars" data-stars-id="${b.id}">
-                  ${[1,2,3,4,5].map(n => `<button class="starBtn${Number(b.rating)>=n?" active":""}" type="button" data-star="${n}" data-star-id="${b.id}">${n}</button>`).join("")}
-                  <span class="pill" style="margin-left:6px;">${Number(b.rating)||0}/5</span>
-                </div>
+                <label>Verlag</label>
+                <div class="kv" id="ol_pub_${b.id}">${escapeHtml((b.ol && b.ol.publishers && b.ol.publishers.length) ? b.ol.publishers.join(", ") : "Noch nicht geladen.")}</div>
+              </div>
+
+              <div class="field">
+                <label>Erscheinungsdatum</label>
+                <div class="kv" id="ol_date_${b.id}">${escapeHtml((b.ol && (b.ol.publish_date || b.ol.first_publish_date)) ? (b.ol.publish_date || b.ol.first_publish_date) : "Noch nicht geladen.")}</div>
+              </div>
+
+              <div class="field">
+                <label>Seiten (Open Library)</label>
+                <div class="kv" id="ol_pages_${b.id}">${escapeHtml((b.ol && Number.isFinite(Number(b.ol.number_of_pages))) ? String(b.ol.number_of_pages) : "Noch nicht geladen.")}</div>
+              </div>
+
+              <div class="field">
+                <label>Sprachen</label>
+                <div class="kv" id="ol_lang_${b.id}">${escapeHtml((b.ol && b.ol.languages && b.ol.languages.length) ? b.ol.languages.join(", ") : "Noch nicht geladen.")}</div>
+              </div>
+
+              <div class="field">
+                <label>Schlagworte</label>
+                <div class="kv" id="ol_subj_${b.id}">${escapeHtml((b.ol && b.ol.subjects && b.ol.subjects.length) ? b.ol.subjects.join(", ") : "Noch nicht geladen.")}</div>
               </div>
 
               <div class="field">
@@ -1276,9 +1106,28 @@
                 <label>Zitat</label>
                 <textarea class="quote" data-quote-id="${b.id}" placeholder="Zitat oder Merksatz …">${escapeHtml(b.quote)}</textarea>
               </div>
+
+              <div class="field">
+                <label>Bewertung</label>
+                <div class="stars">
+                  ${[1,2,3,4,5].map(n => `<button class="starBtn${Number(b.rating)>=n?" active":""}" type="button" data-star="${n}" data-star-id="${b.id}">${n}</button>`).join("")}
+                  <span class="pill" style="margin-left:6px;">${Number(b.rating)||0}/5</span>
+                </div>
+              </div>
+
+              <div class="field">
+                <label>Status</label>
+                <select class="inlineStatus" data-status-id="${b.id}">
+                  <option value="planned"${b.status==="planned"?" selected":""}>Geplant</option>
+                  <option value="reading"${b.status==="reading"?" selected":""}>Lese ich</option>
+                  <option value="paused"${b.status==="paused"?" selected":""}>Pausiert</option>
+                  <option value="done"${b.status==="done"?" selected":""}>Fertig</option>
+                </select>
+              </div>
             </div>
 
             <div class="panelActions" style="margin-top:10px;">
+              <button class="btn btnPrimary loadOl" type="button" data-loadol="${b.id}">Open Library laden</button>
               <button class="btn btnPrimary saveDetails" type="button" data-save="${b.id}">Details speichern</button>
               <span class="pill" id="saveHint_${b.id}"></span>
             </div>
@@ -1286,9 +1135,21 @@
         </div>
       `;
       box.appendChild(el);
+
       setCoverRobust(el.querySelector("img.cover"), b.coverId, b.isbns || []);
     }
 
+    // title click -> open edit (per your request)
+    for (const btn of document.querySelectorAll("button.tBtn")) {
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-open-edit");
+        const items = loadBooks();
+        const book = items.find(x => x.id === id);
+        if (book) openEditPanel(book);
+      });
+    }
+
+    // quick update page
     for (const inp of document.querySelectorAll("input.current")) {
       inp.addEventListener("change", () => {
         const id = inp.getAttribute("data-id");
@@ -1310,10 +1171,10 @@
 
         saveBooks(items);
         renderMyBooks();
-        updateSummary();
       });
     }
 
+    // delete
     for (const btn of document.querySelectorAll("button.del")) {
       btn.addEventListener("click", () => {
         const ok = confirm("Buch wirklich löschen?");
@@ -1324,11 +1185,11 @@
         saveBooks(items);
         closeEditPanel();
         renderMyBooks();
-        updateSummary();
         toast("Buch gelöscht.");
       });
     }
 
+    // edit
     for (const btn of document.querySelectorAll("button.edit")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-edit");
@@ -1338,26 +1199,53 @@
       });
     }
 
+    // details toggle + (lazy) load OpenLibrary
     for (const btn of document.querySelectorAll("button.more")) {
-      btn.addEventListener("click", () => {
+      btn.addEventListener("click", async () => {
         const id = btn.getAttribute("data-more");
         const panel = document.getElementById("details_" + id);
         if (!panel) return;
+
+        const opening = !panel.classList.contains("open");
         panel.classList.toggle("open");
+
+        // on open: if not loaded yet, load once
+        if (opening) {
+          const items = loadBooks();
+          const book = items.find(x => x.id === id);
+          const hasAny = book && book.ol && (
+            book.ol.description || (book.ol.publishers && book.ol.publishers.length) ||
+            book.ol.publish_date || book.ol.first_publish_date || book.ol.number_of_pages
+          );
+          if (!hasAny) {
+            toast("Open Library wird geladen …");
+            const ol = await fetchAndCacheOpenLibraryDetails(id);
+            if (ol) {
+              updateOlUIFromCache(id, ol);
+              toast("Open Library Daten geladen.");
+            } else {
+              toast("Open Library konnte nicht geladen werden.");
+            }
+          }
+        }
       });
     }
 
-    for (const btn of document.querySelectorAll("button.log")) {
-      btn.addEventListener("click", () => {
-        const id = btn.getAttribute("data-log");
-        const items = loadBooks();
-        const book = items.find(x => x.id === id);
-        if (!book) return;
-        openEditPanel(book);
-        document.getElementById("sessionPages").focus();
+    for (const btn of document.querySelectorAll("button.loadOl")) {
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-loadol");
+        toast("Open Library wird geladen …");
+        const ol = await fetchAndCacheOpenLibraryDetails(id);
+        if (ol) {
+          updateOlUIFromCache(id, ol);
+          toast("Open Library Daten geladen.");
+        } else {
+          toast("Open Library konnte nicht geladen werden.");
+        }
       });
     }
 
+    // inline status
     for (const sel of document.querySelectorAll("select.inlineStatus")) {
       sel.addEventListener("change", () => {
         const id = sel.getAttribute("data-status-id");
@@ -1368,11 +1256,11 @@
         book.updatedAt = new Date().toISOString();
         saveBooks(items);
         renderMyBooks();
-        updateSummary();
         toast("Status aktualisiert.");
       });
     }
 
+    // rating
     for (const btn of document.querySelectorAll("button.starBtn")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-star-id");
@@ -1384,11 +1272,11 @@
         book.updatedAt = new Date().toISOString();
         saveBooks(items);
         renderMyBooks();
-        updateSummary();
         toast("Bewertung gespeichert.");
       });
     }
 
+    // save personal details
     for (const btn of document.querySelectorAll("button.saveDetails")) {
       btn.addEventListener("click", () => {
         const id = btn.getAttribute("data-save");
@@ -1406,13 +1294,25 @@
         const hint = document.getElementById("saveHint_" + id);
         if (hint) hint.textContent = "Gespeichert.";
         setTimeout(() => { if (hint) hint.textContent = ""; }, 1400);
-        updateSummary();
       });
     }
-
-    updateSummary();
   }
 
+  function updateOlUIFromCache(id, ol){
+    const set = (elId, val) => {
+      const el = document.getElementById(elId);
+      if (el) el.textContent = val || "—";
+    };
+
+    set("ol_desc_" + id, ol.description ? String(ol.description).slice(0, 600) : "—");
+    set("ol_pub_" + id, (ol.publishers && ol.publishers.length) ? ol.publishers.join(", ") : "—");
+    set("ol_date_" + id, (ol.publish_date || ol.first_publish_date) ? (ol.publish_date || ol.first_publish_date) : "—");
+    set("ol_pages_" + id, Number.isFinite(Number(ol.number_of_pages)) ? String(ol.number_of_pages) : "—");
+    set("ol_lang_" + id, (ol.languages && ol.languages.length) ? ol.languages.join(", ") : "—");
+    set("ol_subj_" + id, (ol.subjects && ol.subjects.length) ? ol.subjects.join(", ") : "—");
+  }
+
+  // ------------ results ------------
   function renderResults(docs) {
     const results = document.getElementById("results");
     const resEmpty = document.getElementById("resEmpty");
@@ -1480,6 +1380,7 @@
   }
   const doSearchDebounced = debounce(doSearch, 350);
 
+  // ------------ edit / sessions ------------
   function saveEdit() {
     const err = document.getElementById("editError");
     err.textContent = "";
@@ -1551,109 +1452,21 @@
 
     document.getElementById("editCurrent").value = String(book.current);
     document.getElementById("editStatus").value = book.status;
-    updateEditBadge();
 
     document.getElementById("sessionHint").textContent = `Eingetragen: ${actual} Seiten.`;
-    updateSummary();
     renderMyBooks();
     toast("Lesesitzung eingetragen.");
   }
 
-  function pickNextBook(){
-    const items = loadBooks();
-    const planned = items.filter(b => b.status === "planned");
-    if (planned.length === 0){
-      toast("Kein geplantes Buch vorhanden.");
-      return;
-    }
-    const pick = planned[Math.floor(Math.random() * planned.length)];
-    document.getElementById("myQuery").value = pick.title;
-    renderMyBooks();
-    toast("Filter auf ein geplantes Buch gesetzt.");
-  }
-
-  function pickClosestToFinish(){
-    const items = loadBooks()
-      .filter(b => b.status !== "done" && Number(b.total) > 0)
-      .sort((a,b) => pct(Number(b.current), Number(b.total)) - pct(Number(a.current), Number(a.total)));
-    if (items.length === 0){
-      toast("Kein passendes Buch gefunden.");
-      return;
-    }
-    const pick = items[0];
-    document.getElementById("myQuery").value = pick.title;
-    renderMyBooks();
-    toast("Filter auf ein fast fertiges Buch gesetzt.");
-  }
-
-  function exportData(){
-    const payload = {
-      version: 1,
-      exportedAt: new Date().toISOString(),
-      goals: loadGoals(),
-      books: loadBooks()
-    };
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "leseverlauf-export.json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
-    setTimeout(() => URL.revokeObjectURL(url), 1000);
-    toast("Export erstellt.");
-  }
-
-  async function importDataFromFile(file){
-    try{
-      const text = await file.text();
-      const data = JSON.parse(text);
-
-      const books = Array.isArray(data?.books) ? data.books.map(normalizeBook) : [];
-      const goals = data?.goals ? {
-        daily: Math.max(0, Number(data.goals.daily || 0)),
-        weekly: Math.max(0, Number(data.goals.weekly || 0))
-      } : loadGoals();
-
-      const existing = loadBooks();
-      const merged = [...existing];
-
-      for (const b of books){
-        const cand = isbnCandidates(b.isbns);
-        let exists = false;
-        if (cand.length){
-          exists = merged.some(x => isbnCandidates(x.isbns).some(v => cand.includes(v)));
-        } else {
-          exists = merged.some(x =>
-            String(x.title).toLowerCase() === String(b.title).toLowerCase() &&
-            String(x.author||"").toLowerCase() === String(b.author||"").toLowerCase()
-          );
-        }
-        if (!exists) merged.push(b);
-      }
-
-      saveBooks(merged.map(normalizeBook));
-      saveGoals(goals);
-      loadGoalsIntoUI();
-      renderMyBooks();
-      toast("Import abgeschlossen.");
-    } catch (e){
-      console.error(e);
-      toast("Import fehlgeschlagen. Datei prüfen.");
-    }
-  }
-
+  // ------------ misc ------------
   function preventWheelOnNumberInputs() {
     document.addEventListener("wheel", (e) => {
       const el = document.activeElement;
-      if (el && el.tagName === "INPUT" && el.type === "number") {
-        e.preventDefault();
-      }
+      if (el && el.tagName === "INPUT" && el.type === "number") e.preventDefault();
     }, { passive: false });
   }
 
-  // wire up
+  // ------------ wire up ------------
   document.getElementById("search").addEventListener("click", doSearch);
   document.getElementById("q").addEventListener("keydown", (e) => { if (e.key === "Enter") doSearch(); });
   document.getElementById("q").addEventListener("input", () => {
@@ -1667,7 +1480,6 @@
 
   document.getElementById("saveEdit").addEventListener("click", saveEdit);
   document.getElementById("cancelEdit").addEventListener("click", closeEditPanel);
-  document.getElementById("editStatus").addEventListener("change", updateEditBadge);
 
   document.getElementById("quickPlus10").addEventListener("click", () => addSessionToEditing(10));
   document.getElementById("quickPlus20").addEventListener("click", () => addSessionToEditing(20));
@@ -1677,33 +1489,9 @@
     document.getElementById("sessionPages").value = "";
   });
 
-  document.getElementById("pickNext").addEventListener("click", pickNextBook);
-  document.getElementById("pickClosest").addEventListener("click", pickClosestToFinish);
-
-  document.getElementById("exportBtn").addEventListener("click", exportData);
-  document.getElementById("importBtn").addEventListener("click", () => document.getElementById("importFile").click());
-  document.getElementById("importFile").addEventListener("change", (e) => {
-    const f = e.target.files && e.target.files[0];
-    if (f) importDataFromFile(f);
-    e.target.value = "";
-  });
-
-  document.getElementById("saveGoals").addEventListener("click", () => {
-    const daily = Number(document.getElementById("goalDaily").value || 0);
-    const weekly = Number(document.getElementById("goalWeekly").value || 0);
-    saveGoals({ daily: Math.max(0, daily), weekly: Math.max(0, weekly) });
-    loadGoalsIntoUI();
-    toast("Ziele gespeichert.");
-  });
-
   document.getElementById("sort").addEventListener("change", () => renderMyBooks());
-  document.getElementById("myQuery").addEventListener("input", debounce(() => renderMyBooks(), 160));
-  document.getElementById("statusFilter").addEventListener("change", () => renderMyBooks());
-  document.getElementById("hideNoCover").addEventListener("change", () => renderMyBooks());
-  document.getElementById("onlyActive").addEventListener("change", () => renderMyBooks());
 
   preventWheelOnNumberInputs();
-  loadGoalsIntoUI();
   renderMyBooks();
 </script>
 </body>
