@@ -8,7 +8,6 @@
     :root{
       --bg: #0b0f14;
       --panel: rgba(255,255,255,0.06);
-      --panel2: rgba(255,255,255,0.08);
       --stroke: rgba(255,255,255,0.10);
       --text: rgba(255,255,255,0.92);
       --muted: rgba(255,255,255,0.66);
@@ -18,7 +17,6 @@
       --shadow: 0 12px 32px rgba(0,0,0,0.45);
       --r: 18px;
     }
-
     *{ box-sizing: border-box; }
     body{
       margin: 0;
@@ -29,40 +27,13 @@
                   linear-gradient(180deg, #070a0f, #0b0f14 45%, #070a0f);
       min-height: 100vh;
     }
+    .wrap{ max-width: 1060px; margin: 26px auto; padding: 0 18px 50px; }
+    header{ display:flex; align-items:flex-end; justify-content:space-between; gap: 14px; margin-bottom: 16px; }
+    h1{ font-size: 26px; margin: 0; letter-spacing: 0.2px; }
+    .sub{ color: var(--muted); font-size: 14px; margin-top: 6px; }
 
-    .wrap{
-      max-width: 1060px;
-      margin: 26px auto;
-      padding: 0 18px 50px;
-    }
-
-    header{
-      display:flex;
-      align-items:flex-end;
-      justify-content:space-between;
-      gap: 14px;
-      margin-bottom: 16px;
-    }
-    h1{
-      font-size: 26px;
-      margin: 0;
-      letter-spacing: 0.2px;
-    }
-    .sub{
-      color: var(--muted);
-      font-size: 14px;
-      margin-top: 6px;
-    }
-
-    .grid{
-      display:grid;
-      grid-template-columns: 1.15fr 0.85fr;
-      gap: 16px;
-      align-items:start;
-    }
-    @media (max-width: 920px){
-      .grid{ grid-template-columns: 1fr; }
-    }
+    .grid{ display:grid; grid-template-columns: 1.15fr 0.85fr; gap: 16px; align-items:start; }
+    @media (max-width: 920px){ .grid{ grid-template-columns: 1fr; } }
 
     .card{
       background: var(--panel);
@@ -76,20 +47,10 @@
       border-bottom: 1px solid var(--stroke);
       background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02));
     }
-    .card .head .title{
-      font-weight: 650;
-      font-size: 14.5px;
-      letter-spacing: 0.2px;
-    }
-    .card .body{
-      padding: 14px 16px 16px;
-    }
+    .card .head .title{ font-weight: 650; font-size: 14.5px; letter-spacing: 0.2px; }
+    .card .body{ padding: 14px 16px 16px; }
 
-    .searchRow{
-      display:flex;
-      gap: 10px;
-      align-items:center;
-    }
+    .searchRow{ display:flex; gap: 10px; align-items:center; }
     .input{
       width:100%;
       padding: 12px 12px;
@@ -117,32 +78,14 @@
     .btn:hover{ background: rgba(255,255,255,0.10); }
     .btn:active{ transform: translateY(1px); }
 
-    .hint{
-      color: var(--muted);
-      font-size: 12.5px;
-      margin-top: 10px;
-      line-height: 1.35;
-    }
-    .status{
-      margin-top: 12px;
-      font-size: 12.5px;
-      color: var(--muted2);
-      min-height: 18px;
-    }
+    .hint{ color: var(--muted); font-size: 12.5px; margin-top: 10px; line-height: 1.35; }
+    .status{ margin-top: 12px; font-size: 12.5px; color: var(--muted2); min-height: 18px; }
 
-    .results{
-      margin-top: 12px;
-      display:flex;
-      flex-direction: column;
-      gap: 10px;
-    }
+    .results{ margin-top: 12px; display:flex; flex-direction: column; gap: 10px; }
 
     .item{
-      display:flex;
-      gap: 12px;
-      padding: 12px;
-      border-radius: 16px;
-      border: 1px solid var(--stroke);
+      display:flex; gap: 12px; padding: 12px;
+      border-radius: 16px; border: 1px solid var(--stroke);
       background: rgba(255,255,255,0.05);
       cursor: pointer;
       transition: background 120ms ease, border-color 120ms ease, transform 120ms ease;
@@ -154,64 +97,36 @@
     }
 
     .cover{
-      width: 56px;
-      height: 84px;
+      width: 56px; height: 84px;
       border-radius: 12px;
       background: rgba(255,255,255,0.06);
       border: 1px solid rgba(255,255,255,0.10);
       object-fit: cover;
       flex: 0 0 auto;
     }
-    .meta{
-      flex: 1;
-      min-width: 0;
-    }
+    .meta{ flex: 1; min-width: 0; }
     .meta .t{
-      font-weight: 700;
-      font-size: 14px;
-      line-height: 1.15;
+      font-weight: 700; font-size: 14px; line-height: 1.15;
       margin-bottom: 3px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
     .meta .a{
-      font-size: 12.5px;
-      color: var(--muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-size: 12.5px; color: var(--muted);
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
     }
-    .meta .s{
-      margin-top: 6px;
-      font-size: 12px;
-      color: var(--muted2);
-    }
+    .meta .s{ margin-top: 6px; font-size: 12px; color: var(--muted2); }
 
-    .myList{
-      display:flex;
-      flex-direction: column;
-      gap: 12px;
-    }
+    .myList{ display:flex; flex-direction: column; gap: 12px; }
 
     .book{
-      display:flex;
-      gap: 12px;
-      padding: 14px;
+      display:flex; gap: 12px; padding: 14px;
       border-radius: 18px;
       border: 1px solid var(--stroke);
       background: rgba(255,255,255,0.05);
     }
-
     .book .meta .t{ white-space: normal; }
-    .book .row{
-      display:flex;
-      align-items:center;
-      justify-content: space-between;
-      gap: 10px;
-      flex-wrap: wrap;
-      margin-top: 10px;
-    }
+
+    .row{ display:flex; align-items:center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
 
     .miniInput{
       width: 120px;
@@ -226,23 +141,15 @@
       border-color: rgba(46,204,113,0.55);
       box-shadow: 0 0 0 4px rgba(46,204,113,0.10);
     }
-
-    .pill{
-      font-size: 12.5px;
-      color: var(--muted);
-    }
-
+    .pill{ font-size: 12.5px; color: var(--muted); }
     .bar{
-      height: 10px;
-      border-radius: 999px;
+      height: 10px; border-radius: 999px;
       background: rgba(255,255,255,0.10);
-      overflow: hidden;
-      margin-top: 10px;
+      overflow: hidden; margin-top: 10px;
       border: 1px solid rgba(255,255,255,0.08);
     }
     .fill{
-      height: 100%;
-      width: 0%;
+      height: 100%; width: 0%;
       background: linear-gradient(90deg, rgba(46,204,113,0.85), rgba(46,204,113,1));
     }
 
@@ -257,21 +164,32 @@
     }
     .danger:hover{ background: rgba(255,77,77,0.16); }
 
-    .empty{
-      color: var(--muted2);
+    .empty{ color: var(--muted2); font-size: 12.5px; padding: 6px 2px 0; }
+
+    .selectCard{
+      border: 1px solid rgba(255,255,255,0.12);
+      background: rgba(255,255,255,0.04);
+      border-radius: 16px;
+      padding: 12px;
+      margin-bottom: 12px;
+      display:none;
+    }
+    .selectTop{ display:flex; gap: 12px; align-items:flex-start; }
+    .selectActions{ display:flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; align-items:center; }
+    .btnPrimary{
+      background: rgba(46,204,113,0.18);
+      border: 1px solid rgba(46,204,113,0.35);
+    }
+    .btnPrimary:hover{ background: rgba(46,204,113,0.22); }
+
+    .err{
+      margin-top: 8px;
+      color: rgba(255, 120, 120, 0.95);
       font-size: 12.5px;
-      padding: 6px 2px 0;
+      min-height: 16px;
     }
 
-    footer{
-      margin-top: 16px;
-      color: var(--muted2);
-      font-size: 12px;
-      line-height: 1.35;
-    }
-
-    a{ color: rgba(255,255,255,0.85); text-decoration: none; }
-    a:hover{ text-decoration: underline; }
+    footer{ margin-top: 10px; color: var(--muted2); font-size: 12px; line-height: 1.35; }
   </style>
 </head>
 <body>
@@ -286,16 +204,14 @@
     <div class="grid">
       <!-- LEFT: Search -->
       <section class="card">
-        <div class="head">
-          <div class="title">Buch suchen</div>
-        </div>
+        <div class="head"><div class="title">Buch suchen</div></div>
         <div class="body">
           <div class="searchRow">
             <input id="q" class="input" placeholder="ISBN oder Buchtitel eingeben" />
             <button id="search" class="btn">Suchen</button>
           </div>
           <div class="hint">
-            Cover und Metadaten kommen aus Open Library. ISBN 10/13 wird erkannt; sonst Titel-Suche.
+            Cover und Metadaten: Open Library. ISBN 10/13 wird erkannt; sonst Titel-Suche.
           </div>
           <div id="status" class="status"></div>
           <div id="results" class="results"></div>
@@ -304,12 +220,37 @@
 
       <!-- RIGHT: My books -->
       <section class="card">
-        <div class="head">
-          <div class="title">Meine Bücher</div>
-        </div>
+        <div class="head"><div class="title">Meine Bücher</div></div>
         <div class="body">
+
+          <!-- Selection + add form -->
+          <div id="selectCard" class="selectCard">
+            <div class="selectTop">
+              <img id="selCover" class="cover" alt="Cover" />
+              <div class="meta">
+                <div id="selTitle" class="t"></div>
+                <div id="selMeta" class="a"></div>
+                <div class="s">Seitenzahlen eintragen und hinzufügen</div>
+              </div>
+            </div>
+
+            <div class="selectActions">
+              <span class="pill">Gesamtseiten</span>
+              <input id="selTotal" class="miniInput" type="number" min="1" placeholder="z. B. 350" />
+
+              <span class="pill">Aktuelle Seite</span>
+              <input id="selCurrent" class="miniInput" type="number" min="0" placeholder="z. B. 20" />
+
+              <button id="addSelected" class="btn btnPrimary">Hinzufügen</button>
+              <button id="clearSelected" class="btn">Abbrechen</button>
+            </div>
+
+            <div id="selError" class="err"></div>
+          </div>
+
           <div id="mybooks" class="myList"></div>
           <div id="empty" class="empty">Noch keine Bücher hinzugefügt.</div>
+
           <footer>
             Speicherung lokal im Browser (LocalStorage). Kein Login, keine Server-Datenbank.
           </footer>
@@ -319,8 +260,9 @@
   </div>
 
 <script>
-  const KEY = "reading_progress_books_v2";
+  const KEY = "reading_progress_books_v3";
 
+  // ---- storage ----
   function loadBooks() {
     try { return JSON.parse(localStorage.getItem(KEY)) || []; }
     catch { return []; }
@@ -329,26 +271,25 @@
     localStorage.setItem(KEY, JSON.stringify(items));
   }
 
+  // ---- helpers ----
   function escapeHtml(s) {
     return String(s).replaceAll("&","&amp;").replaceAll("<","&lt;").replaceAll(">","&gt;");
   }
-
   function isLikelyIsbn(s) {
     const t = String(s).replaceAll(/[\s-]/g, "");
     return /^[0-9Xx]{10}$/.test(t) || /^[0-9]{13}$/.test(t);
   }
-
   function coverUrlByIsbn(isbn, size="M") {
     const clean = String(isbn).replaceAll(/[\s-]/g, "");
     return `https://covers.openlibrary.org/b/isbn/${encodeURIComponent(clean)}-${size}.jpg`;
   }
-
   function pct(current, total) {
     if (!Number.isFinite(total) || total <= 0) return 0;
     const p = (current / total) * 100;
     return Math.max(0, Math.min(100, p));
   }
 
+  // ---- Open Library search ----
   async function searchOpenLibrary(query) {
     const q = query.trim();
     const url = isLikelyIsbn(q)
@@ -360,6 +301,51 @@
     return await r.json();
   }
 
+  // ---- selection state ----
+  let selected = null; // { title, author, year, isbn }
+
+  function setSelected(book) {
+    selected = book;
+
+    const card = document.getElementById("selectCard");
+    const cover = document.getElementById("selCover");
+    const title = document.getElementById("selTitle");
+    const meta = document.getElementById("selMeta");
+    const total = document.getElementById("selTotal");
+    const current = document.getElementById("selCurrent");
+    const err = document.getElementById("selError");
+
+    err.textContent = "";
+    total.value = "";
+    current.value = "";
+
+    title.textContent = book.title || "(ohne Titel)";
+    const authorLine = [book.author, book.year].filter(Boolean).join(" · ");
+    const isbnLine = book.isbn ? (" · ISBN: " + book.isbn) : "";
+    meta.textContent = (authorLine + isbnLine).trim();
+
+    if (book.isbn) {
+      cover.style.visibility = "visible";
+      cover.src = coverUrlByIsbn(book.isbn, "M");
+      cover.onerror = () => { cover.src = ""; cover.style.visibility = "hidden"; };
+    } else {
+      cover.src = "";
+      cover.style.visibility = "hidden";
+    }
+
+    card.style.display = "block";
+    total.focus();
+  }
+
+  function clearSelected() {
+    selected = null;
+    document.getElementById("selectCard").style.display = "none";
+    document.getElementById("selError").textContent = "";
+    document.getElementById("selTotal").value = "";
+    document.getElementById("selCurrent").value = "";
+  }
+
+  // ---- render search results ----
   function renderResults(docs) {
     const results = document.getElementById("results");
     results.innerHTML = "";
@@ -383,54 +369,67 @@
         <div class="meta">
           <div class="t">${escapeHtml(title)}</div>
           <div class="a">${escapeHtml([author, year].filter(Boolean).join(" · "))}${isbn ? " · ISBN: " + escapeHtml(isbn) : ""}</div>
-          <div class="s">Klicken, um hinzuzufügen</div>
+          <div class="s">Klicken, um rechts auszuwählen</div>
         </div>
       `;
-      el.addEventListener("click", () => addBookFlow({ title, author, year, isbn }));
+      el.addEventListener("click", () => setSelected({ title, author, year, isbn }));
       results.appendChild(el);
     }
   }
 
-  function addBookFlow({ title, author, year, isbn }) {
-    const totalStr = prompt("Gesamtseitenzahl (Pflicht):", "");
-    if (totalStr === null) return;
-    const total = Number(totalStr);
+  // ---- add selected to my books ----
+  function addSelectedToList() {
+    const err = document.getElementById("selError");
+    err.textContent = "";
+
+    if (!selected) return;
+
+    const total = Number(document.getElementById("selTotal").value);
+    const currentRaw = document.getElementById("selCurrent").value;
+    const current = currentRaw === "" ? 0 : Number(currentRaw);
+
     if (!Number.isFinite(total) || total <= 0) {
-      alert("Ungültige Gesamtseitenzahl.");
+      err.textContent = "Bitte eine gültige Gesamtseitenzahl eingeben.";
       return;
     }
-
-    const currentStr = prompt("Aktuelle Seite (optional, Standard 0):", "0");
-    if (currentStr === null) return;
-    const current = Number(currentStr);
-    if (!Number.isFinite(current) || current < 0 || current > total) {
-      alert("Ungültige aktuelle Seite.");
+    if (!Number.isFinite(current) || current < 0) {
+      err.textContent = "Aktuelle Seite muss 0 oder größer sein.";
+      return;
+    }
+    if (current > total) {
+      err.textContent = "Aktuelle Seite darf nicht größer als Gesamtseiten sein.";
       return;
     }
 
     const items = loadBooks();
 
-    // Duplikate (ISBN) vermeiden, falls vorhanden
-    if (isbn) {
-      const clean = String(isbn).replaceAll(/[\s-]/g, "");
+    // Duplikate vermeiden (ISBN)
+    if (selected.isbn) {
+      const clean = String(selected.isbn).replaceAll(/[\s-]/g, "");
       const exists = items.some(x => (x.isbn || "").replaceAll(/[\s-]/g, "") === clean);
       if (exists) {
-        alert("Dieses Buch ist bereits in Ihrer Liste (ISBN).");
+        err.textContent = "Dieses Buch ist bereits in Ihrer Liste (ISBN).";
         return;
       }
     }
 
     items.unshift({
       id: crypto.randomUUID(),
-      title, author, year, isbn,
-      total, current,
+      title: selected.title,
+      author: selected.author,
+      year: selected.year,
+      isbn: selected.isbn,
+      total,
+      current,
       updatedAt: new Date().toISOString()
     });
 
     saveBooks(items);
+    clearSelected();
     renderMyBooks();
   }
 
+  // ---- render my books ----
   function renderMyBooks() {
     const items = loadBooks();
     const box = document.getElementById("mybooks");
@@ -501,6 +500,7 @@
     }
   }
 
+  // ---- actions ----
   async function doSearch() {
     const q = document.getElementById("q").value.trim();
     const status = document.getElementById("status");
@@ -523,6 +523,9 @@
 
   document.getElementById("search").addEventListener("click", doSearch);
   document.getElementById("q").addEventListener("keydown", (e) => { if (e.key === "Enter") doSearch(); });
+
+  document.getElementById("addSelected").addEventListener("click", addSelectedToList);
+  document.getElementById("clearSelected").addEventListener("click", clearSelected);
 
   renderMyBooks();
 </script>
