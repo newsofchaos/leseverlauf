@@ -60,31 +60,35 @@
       margin: 0 0 12px;
     }
 
-    /* Suchbereich als Block */
+/* Logo + Suchleiste nebeneinander */
 .searchRow{
   margin: 0 0 12px;
 }
 
-/* Breites Buch-Logo: etwas breiter als die Suchleiste */
+    .searchBarLine{
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+    
+/* stehendes Buch-Logo (ohne Container-Rand) */
 .bookLogo{
-  width: calc(100% + 36px);  /* etwas breiter als der Content-Bereich */
-  margin-left: -18px;        /* gleicht .wrap padding aus */
-  margin-right: -18px;
-  margin-bottom: 10px;
-  display:flex;
-  justify-content:center;
+  flex: 0 0 auto;
+  width: 74px;      /* Logo-Breite */
+  height: 74px;     /* Logo-Höhe */
+  display: grid;
+  place-items: center;
 }
 
-/* Logo-SVG: breit, flach, gut erkennbar */
 .bookLogo svg{
-  width: min(1240px, 104%);
-  height: 84px;
-  display:block;
+  width: 74px;
+  height: 74px;
+  display: block;
 }
-
-/* Suchleiste bleibt wie gehabt (seitenbreit) */
+    
+/* Suchleiste nimmt den Rest */
 .searchShell{
-  width: 100%;
+  flex: 1;
   background: rgba(255,255,255,0.92);
   border: 1px solid var(--stroke);
   border-radius: 16px;
@@ -491,86 +495,82 @@
       <p class="sub">Bücher suchen, hinzufügen und nach Lesestand sortieren.</p>
     </div>
 
-    <!-- Search bar (full width, not sticky) -->
-    <div class="searchRow">
 <div class="searchRow">
-  <div class="bookLogo" aria-hidden="true">
-    <svg viewBox="0 0 1200 220" role="img" aria-label="Buch-Logo">
-      <defs>
-        <!-- Verlauf grau -> grün -->
-        <linearGradient id="gCover" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#7a7a7a"/>
-          <stop offset="1" stop-color="#2e7d32"/>
-        </linearGradient>
+  <div class="searchBarLine">
+    <!-- Stehendes Buch-Logo links (ohne Kasten) -->
+    <div class="bookLogo" aria-hidden="true">
+      <svg viewBox="0 0 96 96" aria-hidden="true">
+        <defs>
+          <linearGradient id="coverGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#8a8a8a"/>
+            <stop offset="1" stop-color="#2e7d32"/>
+          </linearGradient>
 
-        <linearGradient id="gSpine" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0" stop-color="rgba(0,0,0,0.18)"/>
-          <stop offset="1" stop-color="rgba(0,0,0,0.06)"/>
-        </linearGradient>
+          <linearGradient id="spineGrad" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="rgba(0,0,0,0.22)"/>
+            <stop offset="1" stop-color="rgba(0,0,0,0.10)"/>
+          </linearGradient>
 
-        <linearGradient id="gPages" x1="0" y1="0" x2="1" y2="0">
-          <stop offset="0" stop-color="rgba(255,255,255,0.92)"/>
-          <stop offset="1" stop-color="rgba(235,235,235,0.92)"/>
-        </linearGradient>
+          <linearGradient id="pagesGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0" stop-color="rgba(255,255,255,0.95)"/>
+            <stop offset="1" stop-color="rgba(235,235,235,0.92)"/>
+          </linearGradient>
 
-        <!-- Schatten (ohne „Rand-Kasten“) -->
-        <filter id="softShadow" x="-10%" y="-20%" width="120%" height="160%">
-          <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="rgba(0,0,0,0.18)"/>
-        </filter>
-      </defs>
+          <filter id="logoShadow" x="-30%" y="-30%" width="160%" height="160%">
+            <feDropShadow dx="0" dy="3" stdDeviation="3.2" flood-color="rgba(0,0,0,0.22)"/>
+          </filter>
+        </defs>
 
-      <!-- Räumliches Buch (breit), ohne Umrandungs-Box -->
-      <g filter="url(#softShadow)">
+        <!-- 3D stehendes Buch -->
+        <g filter="url(#logoShadow)">
+          <!-- Rücken (links, schmal) -->
+          <path d="M22 20 L34 14 L34 82 L22 88 Z" fill="url(#spineGrad)"/>
 
-        <!-- Rücken links (3D) -->
-        <path d="M180 55 L260 25 L260 185 L180 205 Z"
-              fill="url(#gSpine)"/>
+          <!-- obere Kante -->
+          <path d="M22 20 L34 14 H64
+                   C72 14 78 18 78 26
+                   L66 32 H34 Z"
+                fill="rgba(255,255,255,0.22)"/>
 
-        <!-- obere Kante -->
-        <path d="M180 55 L260 25 H980
-                 C1025 25 1060 45 1060 78
-                 L980 108 H260 Z"
-              fill="rgba(255,255,255,0.22)"/>
+          <!-- Cover (Front) -->
+          <path d="M34 14 H64
+                   C72 14 78 18 78 26
+                   V76
+                   C78 84 72 88 64 88
+                   H34 Z"
+                fill="url(#coverGrad)"/>
 
-        <!-- Front-Cover -->
-        <path d="M260 25 H980
-                 C1025 25 1060 45 1060 78
-                 V170
-                 C1060 195 1032 205 1000 205
-                 H260 Z"
-              fill="url(#gCover)"/>
+          <!-- Seitenblock (Papier) -->
+          <path d="M40 34 H62
+                   C66 34 69 36.5 69 40
+                   V78
+                   C69 81.5 66 84 62 84
+                   H40 Z"
+                fill="url(#pagesGrad)"/>
 
-        <!-- Seitenblock -->
-        <path d="M300 85 H920
-                 C940 85 955 97 955 115
-                 V168
-                 C955 180 945 190 930 190
-                 H300 Z"
-              fill="url(#gPages)"/>
+          <!-- Seitenlinien -->
+          <path d="M44 44 H62" stroke="rgba(0,0,0,0.18)" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M44 52 H62" stroke="rgba(0,0,0,0.15)" stroke-width="2.2" stroke-linecap="round"/>
+          <path d="M44 60 H58" stroke="rgba(0,0,0,0.12)" stroke-width="2.2" stroke-linecap="round"/>
 
-        <!-- Seitenlinien -->
-        <path d="M330 112 H900" stroke="rgba(0,0,0,0.16)" stroke-width="6" stroke-linecap="round"/>
-        <path d="M330 136 H900" stroke="rgba(0,0,0,0.13)" stroke-width="6" stroke-linecap="round"/>
-        <path d="M330 160 H860" stroke="rgba(0,0,0,0.10)" stroke-width="6" stroke-linecap="round"/>
+          <!-- Glanzkante rechts -->
+          <path d="M64 18
+                   C70 18 74 21 74 26
+                   V76
+                   C74 81 70 84 64 84"
+                fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="3.2" stroke-linecap="round"/>
+        </g>
+      </svg>
+    </div>
 
-        <!-- Glanzkante rechts -->
-        <path d="M980 38
-                 C1015 38 1038 52 1038 78
-                 V170
-                 C1038 188 1022 195 1002 195"
-              fill="none" stroke="rgba(255,255,255,0.28)" stroke-width="10" stroke-linecap="round"/>
-      </g>
-    </svg>
-  </div>
-
-  <div class="searchShell" role="search" aria-label="Buchsuche">
-    <label class="srOnly" for="q">Suche nach ISBN oder Buchtitel</label>
-    <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" aria-label="Suche nach ISBN oder Buchtitel" />
-    <button id="search" class="btn btnPrimary" type="button">Suchen</button>
+    <!-- Suchleiste rechts -->
+    <div class="searchShell" role="search" aria-label="Buchsuche">
+      <label class="srOnly" for="q">Suche nach ISBN oder Buchtitel</label>
+      <input id="q" class="q" placeholder="ISBN oder Buchtitel suchen" aria-label="Suche nach ISBN oder Buchtitel" />
+      <button id="search" class="btn btnPrimary" type="button">Suchen</button>
+    </div>
   </div>
 </div>
-
-    </div>
 
     <div class="grid">
       <!-- LEFT: results (1/3, left aligned) -->
